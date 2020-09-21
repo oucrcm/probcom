@@ -27,19 +27,7 @@ This review includes one more step:
 
 ***2. Search for and identify relevant studies.*** Consistent with best practices, we use three iterative methods to search for and identify relevant studies: (1) electronic search databases; (2) other literature reviews; and (3) citation chains. We use three electronic search databases (ProQuest, Web of Science, and EBSCO Academic Search Elite) to search for studies about probabilistic risk/uncertainty communication in the weather and climate domain that use quantitative methodologies. At the start of this review, these searches resulted in 1,559 potentially relevant studies; 31 met the inclusion criteria---they were original research articles that fit the study domain. Next, we use other reviews of the literature to identify potentially relevant studies. To begin this review, we used 12 other reviews that mentioned 147 potentially relevant studies; 37 met the inclusion criteria for this review. Finally, we use citation chains to identify references IN and references TO relevant studies that we identify in electronic databases and other reviews. For example, we began this review by identifying 68 relevant studies in electronic databases and other reviews. There were 2,312 references In the first set of relevant studies; 120 met the inclusion criteria. There were 3,268 references TO the first set of relevant studies; XXX met the inclusion criteria. In sum, we were able to find XXX unique studies to begin this review. Many of these studies report results from multiple studies. If the studies are sufficiently different (e.g., use a different sample, focus on a different topic), we treat them separately. So, though this review began with XXX complete studies, we actually evaluate and analyze results from **504** distinct studies. Because this is a living systematic review, it is important to note that this is only the beginning of the review. We plan to repeat the steps above every 6 months to make sure that we are including the most up-to-date research.
 
-```{r, fig.align = "center", fig.width = 7, fig.cap = "Fig. 1: Flow Diagram of the Search Relevant Studies"}
-# mermaid("
-# graph LR
-# 1(<center>Electronic Databases<br>n = 31</center>) --> 3{<center>First Set<br>of Relevant<br>Studies<br>n = 68</center>}
-# 2(<center>Literature Reviews<br>n = 38</center>) --> 3
-# 3 --> 4(<center>References IN<br>n = 120</center>)
-# 3 --> 5(<center>References TO<br>n = XXX</center>)
-# 4 --> 6{<center>Second Set<br>of Relevant<br>Studies<br>n = XXX</center>}
-# 5 --> 6
-# 6 --> 7[<center>Total<br>Relevant<br>Studies<br>n = 504</center>]
-# ")
-include_graphics("flowchart.png")
-```
+ <img src="https://github.com/oucrcm/probcom/blob/master/flowchart.png" width="500" alt="chart"></a>
 
 ***3. Extract key topics, questions, methods, and findings from relevant studies.*** We carefully look through each relevant study to extract key topic ares, research questions, research methods, and findings and keep track of these details in a database that is available [here](https://docs.google.com/spreadsheets/d/1IyHoJpZiOV6_0soAgWqEoDCK4Uh9OnvxxaL0aRryN5M/edit#gid=0). The [Bibliographic Archive] tab provides a searchable summary of key information about each study in the review.
 
