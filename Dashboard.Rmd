@@ -113,7 +113,7 @@ Column
 
 ### Study Name {.no-title .no-padding data-height=20}
 
-<span style="color: #4682B4;"> <font size="3"> **Study:** </span> `r renderText(select_react() %>% pull(var = Study))` </font> 
+<span style="color: #4682B4;"> **Study:** </span> `r renderText(select_react() %>% pull(var = Citation))` </font> 
 
 ### Study Details {.no-title data-height=175}
 
@@ -123,9 +123,10 @@ Column
 <span style="color: #4682B4;"> **External Validity:** </span> `r renderText(select_react() %>% pull(var = ext))`/3 | 
 <span style="color: #4682B4;"> **Domain Validity:** </span> `r renderText(select_react() %>% pull(var = dom))`/3
 
-<span style="color: #4682B4;"> **DOI:** </span> `r renderUI({a(paste(select_react() %>% pull(var = DOI)), href = paste(select_react() %>% pull(var = DOI)))})`
+<!-- Makes the DOI a hyperlink -->
+<span style="color: #4682B4;"> **DOI:** </span> `r renderUI({a(select_react() %>% pull(var = DOI), href = paste0("https://doi.org/", select_react() %>% pull(var = DOI)))})`
 
-### Bibliographic Archive
+### Bibliographic Archive {.no-title .no-padding}
 ```{r}
 # Renders the full list of studies. Also acts as the input for the Study Details table above.
 font.size <- "10pt"
@@ -143,7 +144,7 @@ DT::datatable(data %>% select(Study,
               options = list(dom = "Blrtip", 
                              initComplete = htmlwidgets::JS("function(settings, json) {", 
                                                             paste0("$(this.api().table().container()).css({'font-size': '", 
-                                                                   font.size, "'});"),"}")),
+                                                                   font.size, "'});"),"}")), # governs text size
               elementId = 'table1')
 
 # This adds a new variable that indexes the position of each study in the dataset as it appears in the datatable. This is so that we can match the study up to the row number returned by input$table1_row_last_clicked later.
@@ -175,6 +176,8 @@ data <- data %>% mutate(tableNumber = c(1:nrow(data)))
 #   }
 # })
 
+# I usually try to populate things with the first observation to show readers what it looks like.
+
 select_react <- reactive({
 
   if(
@@ -182,16 +185,13 @@ select_react <- reactive({
     is.null(input$table1_row_last_clicked)){
     data %>%
       filter(tableNumber == 1) %>%
-      select(Study, Abstract, DOI, int, ext, dom) %>%
-      mutate(DOI = paste0("https://doi.org/", DOI))
+      select(Study, Citation = `Full Citation`, Abstract, DOI, int, ext, dom)
 
   } else {
 
   data %>%
       filter(tableNumber == input$table1_row_last_clicked) %>%
-      select(Study, Abstract, DOI, int, ext, dom) %>%
-      mutate(DOI = paste0("https://doi.org/", DOI))
-
+      select(Study, Citation = `Full Citation`, Abstract, DOI, int, ext, dom)
   }
 })
 ```
