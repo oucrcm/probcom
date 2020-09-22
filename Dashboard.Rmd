@@ -45,22 +45,6 @@ data <- data %>%
   mutate(int = (int_1 + int_2) / 2, 
          ext = (ext_1 + ext_2) / 2,
          dom = (dom_1 + dom_2) / 2)
-
-# This chunk was the original version of the above, which I had to revise because the chunk below wouldn't run on my PC for some reason.
-# data <- data %>% 
-#  rename(
-#    cod_1 = Coder...18,
-#    cod_2 = Coder...23,
-#    int_1 = Int....19, 
-#    int_2 = Int....24, 
-#    ext_1 = Ext....20, 
-#    ext_2 = Ext....25, 
-#    dom_1 = Dom....21,
-#    dom_2 = Dom....26) %>% 
-#  mutate_at(vars(int_1:dom_2), ~ifelse(. == 0, 1, .)) %>% 
-#  mutate(int = (int_1 + int_2) / 2, 
-#         ext = (ext_1 + ext_2) / 2,
-#         dom = (dom_1 + dom_2) / 2)
 ```
 
 Executive Summary
@@ -127,56 +111,89 @@ Bibliographic Archive
 Column 
 -----------------------------------------------------------------------
 
-### Study Name {.no-title .no-padding data-height=50}
+### Study Name {.no-title .no-padding data-height=20}
 
-<span style="color: #4682B4;"> <font size="5"> **Study:** </span> `r renderText(select.react() %>% pull(var = Study))` </font> 
+<span style="color: #4682B4;"> <font size="3"> **Study:** </span> `r renderText(select_react() %>% pull(var = Study))` </font> 
 
-### Study Details {.no-title data-height=350}
+### Study Details {.no-title data-height=175}
 
-<span style="color: #4682B4;"> **Abstract:** </span> `r renderText(select.react() %>% pull(var = Abstract))`
+<span style="color: #4682B4;"> **Abstract:** </span> `r renderText(select_react() %>% pull(var = Abstract))`
 
-<span style="color: #4682B4;"> **Internal Validity:** </span> `r renderText(select.react() %>% pull(var = int))`/3 | <span style="color: #4682B4;"> **External Validity:** </span> `r renderText(select.react() %>% pull(var = ext))`/3 | <span style="color: #4682B4;"> **Domain Validity:** </span> `r renderText(select.react() %>% pull(var = dom))`/3
+<span style="color: #4682B4;"> **Internal Validity:** </span> `r renderText(select_react() %>% pull(var = int))`/3 | 
+<span style="color: #4682B4;"> **External Validity:** </span> `r renderText(select_react() %>% pull(var = ext))`/3 | 
+<span style="color: #4682B4;"> **Domain Validity:** </span> `r renderText(select_react() %>% pull(var = dom))`/3
 
-<span style="color: #4682B4;"> **DOI:** </span> `r renderText(select.react() %>% pull(var = DOI))`
-
+<span style="color: #4682B4;"> **DOI:** </span> `r renderUI({a(paste(select_react() %>% pull(var = DOI)), href = paste(select_react() %>% pull(var = DOI)))})`
 
 ### Bibliographic Archive
 ```{r}
-
 # Renders the full list of studies. Also acts as the input for the Study Details table above.
-DT::datatable(data %>% select(Study, `Summary of Findings`, `Topic(s)`, `Internal Validity` = int, `External Validity` = ext, `Domain Validity` = dom),
+font.size <- "10pt"
+DT::datatable(data %>% select(Study, 
+                              `Summary of Findings`, 
+                              `Topic(s)`, 
+                              `Internal Validity` = int, 
+                              `External Validity` = ext, 
+                              `Domain Validity` = dom),
               filter = "none",
               selection = "single",
               rownames = FALSE,
               style = "bootstrap",
               class = "compact",
-              options = list(dom = "Blrtip"),
-              elementId = 'table1'
-              )
+              options = list(dom = "Blrtip", 
+                             initComplete = htmlwidgets::JS("function(settings, json) {", 
+                                                            paste0("$(this.api().table().container()).css({'font-size': '", 
+                                                                   font.size, "'});"),"}")),
+              elementId = 'table1')
 
 # This adds a new variable that indexes the position of each study in the dataset as it appears in the datatable. This is so that we can match the study up to the row number returned by input$table1_row_last_clicked later.
 
-data <- data %>%
-  mutate(tableNumber = c(1:nrow(data)))
+data <- data %>% mutate(tableNumber = c(1:nrow(data)))
 
 # This creates the reactive version of our dataframe, w/ only the columns we want displayed. The if / else statement is there so that the default text is displayed before the user clicks a study on the datatable.
 
-select.react <- reactive({
+# select_react <- reactive({
+# 
+#   if(is.null(input$table1_row_last_clicked)){
+#     
+#     # This is the dataframe that is returned when input$table1_row_last_clicked = NA (on page load, before clicking the table)
+#     data.frame(Study = "Click on one of the studies below to learn more!", 
+#                Abstract = "None", 
+#                DOI = "None", 
+#                int = "0", 
+#                ext = "0", 
+#                dom = "0", 
+#                stringsAsFactors = FALSE)
+#     
+#   } else {
+#     
+#   data %>%
+#       filter(tableNumber == input$table1_row_last_clicked) %>%
+#       select(Study, Abstract, DOI, int, ext, dom) %>% 
+#       mutate(DOI = paste0("https://doi.org/", DOI))
+#       
+#   }
+# })
 
-  if(is.null(input$table1_row_last_clicked)){
+select_react <- reactive({
+
+  if(
     
-    # This is the dataframe that is returned when input$table1_row_last_clicked = NA (on page load, before clicking the table)
-    data.frame(Study = "Click on one of the studies below to learn more!", Abstract = "None", DOI = "None", int = "0", ext = "0", dom = "0", stringsAsFactors = FALSE)
-    
+    is.null(input$table1_row_last_clicked)){
+    data %>%
+      filter(tableNumber == 1) %>%
+      select(Study, Abstract, DOI, int, ext, dom) %>%
+      mutate(DOI = paste0("https://doi.org/", DOI))
+
   } else {
-    
+
   data %>%
-    filter(tableNumber == input$table1_row_last_clicked) %>%
-    select(Study, Abstract, DOI, int, ext, dom)
-    
+      filter(tableNumber == input$table1_row_last_clicked) %>%
+      select(Study, Abstract, DOI, int, ext, dom) %>%
+      mutate(DOI = paste0("https://doi.org/", DOI))
+
   }
 })
-
 ```
 
 State of the Literature {.storyboard}
@@ -196,17 +213,20 @@ topic_frequency$topic <- factor(topic_frequency$topic, levels = topic_frequency$
                                            "General\nUnderstanding", "Prob. vs. Det.", "Opinions &\nPerceptions", 
                                            "Small &\nLong-term Risks", "Affect &\nEmotion", "Other\nMisc."))
 
-propPlot <- ggplot(topic_frequency, aes(x = topic, y = prop, fill = prop, text = paste0("Topic: ", topic, "<br>", "Proportion of Studies: ", round(prop, 2)*100, "%"))) +
+propPlot <- ggplot(topic_frequency, aes(x = topic, 
+                                        y = prop, 
+                                        fill = prop, 
+                                        text = paste0("Topic: ", topic, "<br>", 
+                                                      "Proportion of Studies: ", round(prop, 2) * 100, "%"))) +
   geom_bar(stat = "identity") +
   scale_y_continuous(labels = scales::percent, limits = c(0, 0.35)) + 
   labs(y = "Studies (%)", x = "Study Topic") +
   theme_minimal(base_size = 14) +
-  theme(axis.text.x = element_text(size = 6)) +
+  theme(axis.text.x = element_text(size = 12)) +
   guides(fill = FALSE) +
   scale_fill_viridis_c()
 
 ggplotly(propPlot, tooltip = c("text"))
-
 ```
 
 ***
