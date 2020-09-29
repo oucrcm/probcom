@@ -111,7 +111,7 @@ Bibliographic Archive
 Column 
 -----------------------------------------------------------------------
 
-### Study Name {.no-title .no-padding data-height=20}
+### Study Name {.no-title .no-padding data-height=30}
 
 <span style="color: #4682B4;"> **Study:** </span> `r renderText(select_react() %>% pull(var = Citation))` </font> 
 
@@ -126,7 +126,7 @@ Column
 <!-- Makes the DOI a hyperlink -->
 <span style="color: #4682B4;"> **DOI:** </span> `r renderUI({a(select_react() %>% pull(var = DOI), href = paste0("https://doi.org/", select_react() %>% pull(var = DOI)))})`
 
-### Bibliographic Archive {.no-title .no-padding}
+### Bibliographic Archive {.no-title}
 ```{r}
 # Renders the full list of studies. Also acts as the input for the Study Details table above.
 font.size <- "10pt"
@@ -136,7 +136,7 @@ DT::datatable(data %>% select(Study,
                               `Internal Validity` = int, 
                               `External Validity` = ext, 
                               `Domain Validity` = dom),
-              filter = "none",
+              filter = "top",
               selection = "single",
               rownames = FALSE,
               style = "bootstrap",
@@ -226,7 +226,9 @@ propPlot <- ggplot(topic_frequency, aes(x = topic,
   guides(fill = FALSE) +
   scale_fill_viridis_c()
 
-ggplotly(propPlot, tooltip = c("text"))
+renderPlotly({
+  ggplotly(propPlot, tooltip = c("text"))
+})
 ```
 
 ***
@@ -258,6 +260,30 @@ Commentary:
 
 Core Findings
 =========================================
+
+Inputs {.sidebar}
+-----------------------------------------
+
+```{r}
+# Shiny inputs for the Core Fidnings page go here - these are all the ways to sort / filter the big list of findings
+
+# Filter by topic
+selectInput(
+  inputId = 'topicFilter',
+  choices = c("General Understanding", "Verbal Expressions", "Formats & Framing", "Visualizations", "Probabilistic vs. Deterministic", "Opinions / Perceptions", "Affect / Emotion", "Small / Long-term Risk"),
+  multiple = TRUE,
+  label = 'Filter Recommendations by Topic'
+)
+
+# Filter / sort by number of supporting studies
+
+# Filter by SoE?
+
+# Search bar
+
+```
+
+
 
 Row {.tabset}
 -----------------------------------------
