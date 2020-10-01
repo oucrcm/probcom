@@ -14,10 +14,13 @@ library(tidyverse)
 library(googlesheets4)
 library(plotly)
 library(shiny)
+library(formattable)
 
  data <- read_sheet("https://docs.google.com/spreadsheets/d/1IyHoJpZiOV6_0soAgWqEoDCK4Uh9OnvxxaL0aRryN5M/edit#gid=0", sheet = "Data Extraction")
  data <- data %>% drop_na(Source)
 
+ data.findings <- read_sheet("https://docs.google.com/spreadsheets/d/1IyHoJpZiOV6_0soAgWqEoDCK4Uh9OnvxxaL0aRryN5M/edit#gid=0", sheet = "Findings / Recs Spreadsheet")
+ 
 # saveRDS(data, "database.Rds")
 # data <- readRDS("database.Rds")
 
@@ -227,7 +230,8 @@ propPlot <- ggplot(topic_frequency, aes(x = topic,
   scale_fill_viridis_c()
 
 renderPlotly({
-  ggplotly(propPlot, tooltip = c("text"))
+  ggplotly(propPlot, tooltip = c("text")) %>%
+    layout(xaxis = list(fixedrange = TRUE), yaxis = list(fixedrange = TRUE))
 })
 ```
 
@@ -258,195 +262,92 @@ Commentary:
 - Text
 - Text
 
-Core Findings
+Core Findings {data-orientation=rows}
 =========================================
 
-Inputs {.sidebar}
+Row {data-height=75}
 -----------------------------------------
 
+### Finding {.no-title}
 ```{r}
-# Shiny inputs for the Core Fidnings page go here - these are all the ways to sort / filter the big list of findings
+renderText({
+  finding_react() %>%
+    pull(var = Recomendation)
+})
 
-# Filter by topic
-selectInput(
-  inputId = 'topicFilter',
-  choices = c("General Understanding", "Verbal Expressions", "Formats & Framing", "Visualizations", "Probabilistic vs. Deterministic", "Opinions / Perceptions", "Affect / Emotion", "Small / Long-term Risk"),
-  multiple = TRUE,
-  label = 'Filter Recommendations by Topic'
-)
 
-# Filter / sort by number of supporting studies
+```
 
-# Filter by SoE?
+Row {data-height=150}
+-------------------------------------------
 
-# Search bar
+### Relevant Topics
+```{r}
+renderText({
+  finding_react() %>%
+    pull(var = Topic)
+})
+
 
 ```
 
 
+### Average Strength of Supporting Evidence
+```{r}
 
-Row {.tabset}
+
+
+```
+
+### Number of Contradicting Studies
+```{r}
+
+
+
+```
+
+
+Row
 -----------------------------------------
 
-### General Understanding
+### Complete List of Core Findings
 
-- Text
-- Text
-- Text
+```{r}
 
-### Verbal Expressions
+data.findings <- data.findings %>% mutate(tableNumber = c(1:nrow(data.findings)))
 
-**Modifier terms (i.e. Not likely, improbable, very likely etc.)**
+data.findings %>%
+  select(Recomendation, Topic) %>%
+  DT::datatable(., filter = "top",
+              selection = "single",
+              rownames = FALSE,
+              style = "bootstrap",
+              class = "compact",
+              options = list(dom = "Blrtip", 
+                             initComplete = htmlwidgets::JS("function(settings, json) {", 
+                                                            paste0("$(this.api().table().container()).css({'font-size': '", 
+                                                                   font.size, "'});"),"}")), # governs text size
+              elementId = 'findingTable')
 
-- **Recommendation**: If combined expressions are used, it remains important to use the correct verbal risk descriptor that is interpreted by people in the same way as the numerical expression that is associated with it. Verbal risk descriptors as a whole mislead rather than inform, leading readers to greatly overestimate their risk of side effects (Webster, Weinman, and Rubin 2017).
- Caution is needed in interpreting the differences in membership functions between the selection and evaluation tasks. Comprehension usually involves a receiver who hears some expression and tries to figure out what it might mean and to what it might refer. Vague probability terms (likely, probable, possible, unlikely, and improbable) can cause difficulty in communication due to interpretation (Fillenbaum et al. 1991, Reyna 1981).
-- **Recommendation**: Negative verbal modifiers (i.e. “not likely”, “improbable”, etc.) are interpreted as more qualifying and less definitive than positive verbal modifiers (i.e. “very possible”, “quite likely”, etc.) (Reyna 1981).
-- **All studies in this sub-topic**:
-    - Fillenbaum et al. (1991)
-    - Reyna (1981) Studies 1 and 2 
-    - Webster, Weinman, and Rubin (2017)
+finding_react <- reactive({
 
-**Translation Studies**
+  if(
+    
+    is.null(input$findingTable_row_last_clicked)){
+    data.findings %>%
+      filter(tableNumber == 1) %>%
+      select(Recomendation, Topic)
 
-- Recommendation: Don’t assume that a verbal probability term or statement will be interpreted the same way by everyone, as there is strong evidence that people interpret such terms much more ambiguously and heterogeneously than most realize. Verbal expressions describing probabilities close to 0%, 50%, and 100% are the least prone to such misunderstandings (Amer, Hackenbrack, and Nelson 1994, Beyth-Marom 1982, Brun & Teigen 1988, Budescu et al 2009, Budescu et al 2012, Budescu et al 2014, Christopher et al 2010, Christopher and Hotz 2004, Clark et al 1992, Karelitz & Budescu 2004, Kunneman, Stiggelbout, and Pieterse 2020, Rapoport, Wallsten, and Cox 1987, Reagan et al 1989).
-- Recommendation: While interpretations of verbal probability statements vary substantially from person to person, they appear to be largely stable over time for each individual (Budescu and Wallsten 1985, Clarke et al 1992, Karelitz & Budescu 2004, Rapoport, Wallsten, and Cox 1987).
-- Recommendation: Peoples’ interpretations of verbal probability statements in the absence of a translation tool tend to regress towards a 50/50 chance (Budescu et al 2009, Budescu et al 2012, Budescu et al 2014, ).
-- All studies in this sub-topic:
-    - Amer, Hackenbrack, and Nelson (1994)
-    - Austin, Hippman, and Honer (2012)
-    - Beyth-Marom (1982)
-    - Brun & Teigen (1988) Study 1 and 2
-    - Budescu and Wallsten (1985)
-    - Budescu et al (2009)
-    - Budescu et al (2014)
-    - Christopher and Hotz (2004)
-    - Christopher et al. (2010)
-    - Clarke et al. (1992) Studies 1 and 2
-    - Hamm (1991) Studies 1 and 2
-    - Jaffe-Katz, Budescu, and Wallsten (1989) Study 1
-    - Juanchich, Teigen, and Gourdon (2013) Studies 1-5
-    - Karelitz & Budescu (2004) Studies 1-3
-    - Kunneman, Stiggelbout, and Pieterse (2020)
-    - Rapoport, Wallsten, and Cox (1987) 
-    - Reagan et al (1989)
-    - Taylor, Stevenson, and McDowell (2018)
+  } else {
 
-Reference Points / Directionality
-Recommendation: Be mindful of the “reference points” and “directionality” of your verbal probability statements - you could be accidentally implying that your forecasts are higher or lower than “expected” and indirectly influencing how people interpret your communication. Generally, positively directional statements (such as “it is likely that it will rain”) draw attention to the possibility of an event happening and cause people to interpret such statements as more likely, while negatively directional statements (such as “it is unlikely that there will be clear skies”) have the opposite effect. Contextual factors can affect this as well (Honda and Yamagishi 2006; 2009; 2017; McKenzie and Nelson 2003; Teigan and Brun 1999; 2000; 2003, McKenzie and Nelson 2003)
-Recommendation: Using positively directional verbal probability statements might be more effective at spurring people to take precautionary actions (Teigen and Brun 1999).
-Recommendation: The framing of a verbal probability statement affects how people interpret it as well; independent of the directionality of the phrase, people generally interpret verbal probability statements as more likely when they describe the chance of failure (or an undesirable outcome) as opposed to the chance of success (Juanchich et al 2013, Mandel 2015). 
-Recommendation: Different situations can be perceived differently to participants even when using the same wording when using verbal answer scales (very likely, not as likely). To combat this, frequency formats should be used.The presentation and communication of statistical information in the form of frequencies is more intuitive and understandable than alternative forms of presentation such as probabilities and percentages (Krumpal et al.)*Can also be used under modifier terms
-All studies in this sub-topic:
-Honda, Matsuka, and Ueda (2017)
-Honda & Yamagishi (2017) Study 1-4
-Honda and Yamagishi (2006) Studies 1 and 2
-Honda and Yamagishi (2009)
-Juanchich et al. (2013)
-Krumpal et. al. (2011)
-Mandel (2015)
-McKenzie and Nelson (2003) Studies 1 and 2
-Teigen and Brun (1999) Studies 1-3
-Teigen and Brun (2000) Studies 1-2
-Teigen and Brun (2003) Studies 1-3
+  data.findings %>%
+      filter(tableNumber == input$findingTable_row_last_clicked) %>%
+      select(Recomendation, Topic)
+  }
+})
 
+```
 
-Context
-Recommendation: Purely verbal probability statements regarding politically or socially sensitive issues (Climate Change, for instance) are more prone to being misinterpreted due to motivated reasoning on the part of the listeners due to their ambiguity (Budescu et a l 2012, Piercey 2009)
-Recommendation: People often implicitly interpret verbal probability expressions as more likely when they describe more severe or undesirable outcomes (“severity bias”). For instance, someone who interprets a “slight chance” of rain showers to mean a 1-5% chance will likely interpret a “slight chance” of a hurricane to mean something closer to a 10-15% chance (Bonnefon and Villejoubert 2006, Fischer and Jungermann 1996, Harris & Corner 2011, Weber and Hilton 1990).
-Recommendation: People often implicitly interpret verbal probability expressions as more likely when they describe events with higher base rates (“base rate bias”). Additionally, interpretations of verbal probability statements will be more homogeneous when they describe events with higher base rates; for instance, all else being equal there will be more agreement about what “it is likely that you will give birth to a child with blond hair” means than what “it is likely that you will give birth to twins” means, since the former is a higher-frequency event than the latter (Pepper and Prytulak 1974, Weber and Hilton 1990).
-Recommendation: The contextual effects of base-rate and severity bias are still present even when a precise, numeric version of the forecast is given as well (Windschitl and Weber 1999).
-Recommendation: The perceived meaning of verbal probability statements varies depending on the profession and credibility of the communicator (hearing “possible” from a doctor denotes a lower chance than hearing it from a news reporter, for instance), but it appears that these context-dependent effects are largely inconsistent from person to person and thus difficult to predict or characterize in aggregate (Brun & Teigen 1988).
-All studies in this sub-topic:
-Bonnefon and Villejoubert (2006)
-Brun & Teigen (1988) Study 3
-Fischer and Jungermann (1996)
-Harris & Corner (2011) Studies 1-3
-Pepper and Prytulak (1974)
-Piercey (2009)
-Weber and Hilton (1990) Study 1-3
-Windschitl and Weber (1999) Studies 1-3
-
-Vagueness*
-Recommendation: When verbally communicating forecasts that are vague or have high uncertainty, be aware that people often implicitly understand more uncertain probabilistic information (i.e. information having a larger confidence interval rather than a smaller one) as signalling a higher likelihood and more severe outcomes, independent of the probabilistic information itself (Løhre 2018, Løhre, Juanchich, et al. 2019).
-All studies in this sub-topic:
-Kuhn and Budescu (1996)
-Løhre (2018) Studies 1 and 6
-Løhre, Juanchich, et al. (2019) Studies 1-5
-
-
-Specific Word Choice - anything about how a specific word / phrase is interpreted or used
-Recommendation: When deciding whether to use a word like “can” (which implies a possibility) or “will” (which implies more certainty), be aware of the “extremity effect”: when shown a probability and asked what “can” happen, people tend to focus on the most extreme possible values, and when asked what “will” happen, they tend to focus on the more likely scenarios. If focusing on more remote possibilities would be counterproductive to the goal of your communication, be wary of what your word choice implies about how certain you are and what risks it draws attention to (Teigen and Filkuková 2013, Teigen, Filkuková, and Hohle 2018, Teigen, Juanchich, and Filkukova 2014)
-Recommendation: People often use and interpret words like “improbable” to refer to events that aren’t just unlikely (something like a 10-20% chance, for instance), but nearly impossible (closer to a ~1% chance, for instance). Often, “improbable” is implicitly understood to refer to events that have not happened yet, but have a small chance of happening in the future. Clarifying such terms and providing explicit numeric “translations” could help to clear up these kinds of misunderstandings (Teigen, Juanchich, and Riege 2013).
-All studies in this sub-topic:
-Teigen and Filkuková (2013) Studies 1-5; “will” and “can”
-Teigen, Filkuková, and Hohle (2018) Studies 1-5; “will” and “can”
-Teigen, Juanchich, and Filkukova (2014) Studies 1-4
-Teigen, Juanchich, and Riege (2013)
-
-
-
-Verbal versus or in combination with Numerical
-Recommendation: In general, it is best to provide an in-text “translation” of verbal statements, preferably right next to the statement in question, in order to anchor the recipients’ interpretation. People do not reliably use guidelines or translation tools unless they are directly in front of them and integrated directly into the communication (Budescu et al. 2009, Budescu et al. 2012, Harris, Por, and Broomell 2017, Wintle et al. 2019).
-Recommendation: In scenarios where underestimating risks could have disastrous consequences, it may be better to provide a number first, then use the verbal expression as a translation (opposite to the way the IPCC reports “translate” their uncertainty communications, for example) in order to minimize the “extremity effect” (Jenkins, Harris, and Lark 2018, Jenkins Harris and Lark 2019). 
-Recommendation: Purely verbal expressions of risk with no “translation” provided should be avoided. If for some reason you must choose between providing purely verbal or purely numeric information, numeric information should be prioritized because it is interpreted more consistently. There is also some evidence that people tend to be more comfortable with and trusting of purely numeric information as opposed to purely verbal information, and that purely verbal statements often lead people to overestimate risks (Budescu, Weinberg, and Wallsten 1988, Gurmankin et al. 2004, Knapp, Raynor, Woolf et. al. 2009, P. Knapp, Raynor, and Berry 2004).
-Recommendation: People generally find verbal probability information more intuitive and easy to use. Numeric probability information, on the other hand, is seen as more precise and elicits more deliberative and reasoned responses (Wallsten et al. 1993, Windschitl and Wells 1996).
-All studies in this sub-topic:
-Bisantz, Marsiglio, and Munch (2005) Studies 1-4 
-Budescu, Teigen and Brun (2012) 
-Budescu et al (2012) Studies 1-2
-Budescu, Weinberg, and Wallsten (1988)
-Erev and Cohen (1990)
-Gurmankin et al (2004)
-Harris, Por, and Broomell (2017) 
-Jenkins, Harris, and Lark (2018)
-Jenkins, Harris, and Lark (2019)
-Knapp, Raynor, Woolf et. al. (2009)
-Knapp, Raynor, and Berry (2004)
-Wallsten et al. (1993)
-Windschitl and Wells (1996)
-Wintle et al. (2019)
-
-### Formats / Framing
-
-- Text
-- Text
-- Text
-
-### Visualizations
-
-- Text
-- Text
-- Text
-
-### Prob. vs. Det.
-
-- Text
-- Text
-- Text
-
-### Opinions / Perceptions
-
-- Text
-- Text
-- Text
-
-### Affect / Emotion
-
-- Text
-- Text
-- Text
-
-### Small / Long-term risk
-
-- Text
-- Text
-- Text
-
-### Other / Misc.
-
-- Text
-- Text
-- Text
 
 Recommendations {.storyboard}
 =========================================
