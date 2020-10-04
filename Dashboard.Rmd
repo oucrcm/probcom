@@ -15,6 +15,7 @@ library(googlesheets4)
 library(plotly)
 library(shiny)
 library(formattable)
+library(stringr)
 
  data <- read_sheet("https://docs.google.com/spreadsheets/d/1IyHoJpZiOV6_0soAgWqEoDCK4Uh9OnvxxaL0aRryN5M/edit#gid=0", sheet = "Data Extraction")
  data <- data %>% drop_na(Source)
@@ -268,7 +269,7 @@ Core Findings {data-orientation=rows}
 Row {data-height=75}
 -----------------------------------------
 
-### Finding {.no-title}
+### Finding 
 ```{r}
 renderText({
   finding_react() %>%
@@ -278,16 +279,19 @@ renderText({
 
 ```
 
-Row {data-height=150}
+Row 
 -------------------------------------------
 
-### Relevant Topics
+### Supporting Studies
 ```{r}
-renderText({
-  finding_react() %>%
-    pull(var = Topic)
-})
 
+renderTable({
+
+data %>%
+filter(str_detect(toString(finding_react() %>% pull(var = 'Studies Cited')), data$`Full ID`)) %>%
+    select(Study, Source, 'Topic(s)')
+
+})
 
 ```
 
@@ -335,14 +339,12 @@ finding_react <- reactive({
     
     is.null(input$findingTable_row_last_clicked)){
     data.findings %>%
-      filter(tableNumber == 1) %>%
-      select(Recomendation, Topic)
+      filter(tableNumber == 1) 
 
   } else {
 
   data.findings %>%
-      filter(tableNumber == input$findingTable_row_last_clicked) %>%
-      select(Recomendation, Topic)
+      filter(tableNumber == input$findingTable_row_last_clicked) 
   }
 })
 
