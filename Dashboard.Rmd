@@ -266,10 +266,10 @@ Commentary:
 Core Findings {data-orientation=rows}
 =========================================
 
-Row {data-height=75}
+Row {data-height=100}
 -----------------------------------------
 
-### Finding 
+### Finding
 ```{r}
 renderText({
   finding_react() %>%
@@ -279,19 +279,33 @@ renderText({
 
 ```
 
-Row 
+Row {data-height=300}
 -------------------------------------------
 
 ### Supporting Studies
 ```{r}
+# Using renderTable() would be simpler and cleaner looking than a datatable, but I couldn't think of a way to get the DOI to display as a link without it 
 
-renderTable({
+# renderTable({
+# 
+# data %>%
+#   filter(str_detect(toString(finding_react() %>% pull(var = 'Studies Cited')), data$`Full ID`)) %>%
+#   mutate(Link = paste0('<a href = "https://doi.org/', DOI, '">Link to Article</a>')) </a>")) %>%
+#   select(Study, Link)
+#         
+# })
+
+renderDataTable({
 
 data %>%
-filter(str_detect(toString(finding_react() %>% pull(var = 'Studies Cited')), data$`Full ID`)) %>%
-    select(Study, Source, 'Topic(s)')
-
-})
+  filter(str_detect(toString(finding_react() %>% pull(var = 'Studies Cited')), data$`Full ID`)) %>%
+  mutate(Link = paste0('<a href = "https://doi.org/', DOI, '">Link to Article</a>')) %>%
+  select(Study, Link)
+  
+}, escape = FALSE, options = list(scrollY = '250px', paging = FALSE, ordering = FALSE, searching = FALSE, dom = "t", columns = list(
+                   list(title = ""),
+                   list(title = "")
+                 )))
 
 ```
 
