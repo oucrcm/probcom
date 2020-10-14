@@ -126,10 +126,12 @@ include_graphics("flowchart.png")
 Bibliographic Archive 
 =========================================
 
+**This page contains the complete bibliographic archive of all the studies we examined for this reivew. Click on a study in the table below to view the abstract, the subjective internal, external, and domain validity scores given to each study, and a link to the study's DOI page.**
+
 Column 
 -----------------------------------------------------------------------
 
-### Study Name {.no-title .no-padding data-height=30}
+### Study Name {.no-title .no-padding data-height=40}
 
 <span style="color: #4682B4;"> **Study:** </span> `r renderText(select_react() %>% pull(var = Citation))` </font> 
 
@@ -159,7 +161,7 @@ DT::datatable(data %>% select(Study,
               rownames = FALSE,
               style = "bootstrap",
               class = "compact",
-              options = list(dom = "Blrtip", 
+              options = list(dom = "Brtip", 
                              initComplete = htmlwidgets::JS("function(settings, json) {", 
                                                             paste0("$(this.api().table().container()).css({'font-size': '", 
                                                                    font.size, "'});"),"}")), # governs text size
@@ -280,16 +282,17 @@ Commentary:
 Core Findings {data-orientation=rows}
 =========================================
 
+**This page contains a complete list of the "core findings" we identified from among the materials in our systematic review. This list includes any finding that either 1) is identified and replicated in multiple studies, 2) is identified by at least one study of extremely high quality, or 3) has easily identifiable potential utility for end-users of this review. As a result, some of these findings have less supporting evidence than others. Click on any of the core findings in the table below to view the supporting studies and their associated (subjective) internal, external, and domain validity scores.**
+
 Row {data-height=100}
 -----------------------------------------
 
-### Finding
+### Finding {.no-title}
 ```{r}
 renderText({
   finding_react() %>%
     pull(var = Recomendation)
 })
-
 
 ```
 
@@ -379,7 +382,7 @@ data.findings %>%
               rownames = FALSE,
               style = "bootstrap",
               class = "compact",
-              options = list(dom = "Blrtip", 
+              options = list(dom = "Brtip", 
                              initComplete = htmlwidgets::JS("function(settings, json) {", 
                                                             paste0("$(this.api().table().container()).css({'font-size': '", 
                                                                    font.size, "'});"),"}")), # governs text size
