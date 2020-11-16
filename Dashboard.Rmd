@@ -17,13 +17,15 @@ library(shiny)
 library(formattable)
 library(stringr)
 
- data <- read_sheet("https://docs.google.com/spreadsheets/d/1IyHoJpZiOV6_0soAgWqEoDCK4Uh9OnvxxaL0aRryN5M/edit#gid=0", sheet = "Data Extraction")
- data <- data %>% drop_na(Source)
+# Get latest data; note: cannot connect to Google in application. Must save files locally.
+# data <- read_sheet("https://docs.google.com/spreadsheets/d/1IyHoJpZiOV6_0soAgWqEoDCK4Uh9OnvxxaL0aRryN5M/edit#gid=0", sheet = "Data Extraction")
+# data <- data %>% drop_na(Source)
+# data.findings <- read_sheet("https://docs.google.com/spreadsheets/d/1IyHoJpZiOV6_0soAgWqEoDCK4Uh9OnvxxaL0aRryN5M/edit#gid=0", sheet = "Findings / Recs Spreadsheet")
+# saveRDS(data, "data_extraction.Rds")
+# saveRDS(data.findings, "data_findings.Rds")
 
- data.findings <- read_sheet("https://docs.google.com/spreadsheets/d/1IyHoJpZiOV6_0soAgWqEoDCK4Uh9OnvxxaL0aRryN5M/edit#gid=0", sheet = "Findings / Recs Spreadsheet")
- 
-# saveRDS(data, "database.Rds")
-# data <- readRDS("database.Rds")
+data <- readRDS("data_extraction.Rds")
+data.findings <- readRDS("data_findings.Rds")
 
 data$`Formats / Framing` <- ifelse(str_detect(data$`Topic(s)`, "Formats / Framing"), 1, 0)
 data$`Verbal Expressions` <- ifelse(str_detect(data$`Topic(s)`, "Verbal Expressions"), 1, 0)
