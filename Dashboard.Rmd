@@ -284,7 +284,7 @@ Commentary:
 Core Findings {data-orientation=rows}
 =========================================
 
-**This page contains a complete list of the "core findings" we identified from among the materials in our systematic review. This list includes any finding that either 1) is identified and replicated in multiple studies, 2) is identified by at least one study of extremely high quality, or 3) has easily identifiable potential utility for end-users of this review. As a result, some of these findings have less supporting evidence than others. Click on any of the core findings in the table below to view the supporting studies and their associated (subjective) internal, external, and domain validity scores.**
+**This page contains a complete list of the "core findings" we identified from among the materials in our systematic review. This list includes any finding that either 1) is identified and replicated consistently across multiple high-quality studies, 2) is identified by at least one study of extremely high quality, or 3) has easily identifiable potential utility for end-users of this review. As a result, some of these findings have less supporting evidence than others. Click on any of the core findings in the table below to view the supporting studies and their associated (subjective) internal, external, and domain validity scores.**
 
 Row {data-height=100}
 -----------------------------------------
@@ -408,7 +408,7 @@ finding_react <- reactive({
 ```
 
 
-Recommendations {.storyboard}
+Practical Recommendations {.storyboard}
 =========================================
 
 ### 1. Use probability information in lieu of deterministic information.
@@ -417,21 +417,474 @@ Recommendations {.storyboard}
 
 **Recommendation #1:** Use probability information in lieu of deterministic information.
 
-**Confidence:** High.
-
-**Supporting studies:** Jones 2018; Smith 2020.
-
 **Example:** 
 
-- **Replace**: Watch out! These storms will cause heavy downpours and flooding.
-- **With**: Watch out! There is an extremely high (90-95%) chance that these storms will cause heavy downpours and flooding.
+- **Replace**: These storms will cause heavy downpours and flooding.
+- **With**: There is an extremely high (90%) chance that these storms will cause heavy downpours and flooding.
 
-</font>
+
+**Example Studies**: <a href = "https://doi.org/10.1037/a0025185">Joslyn & LeClerc (2012)</a> and <a href = "https://doi.org/10.1037/xap0000165">Grounds & Joslyn (2018)</a>
+
+<br>
+**All Relevant / Supporting Studies:** </font>
+
+```{r}
+cf1_studies <- data.findings %>%
+  filter(ID == "124" | ID == "187" | ID == "196") 
+
+renderDataTable({
+
+data %>%
+  filter(str_detect(toString(cf1_studies$'Studies Cited'), data$`Full ID`)) %>%
+  mutate(Link = paste0('<a href = "https://doi.org/', DOI, '">Link to Article</a>')) %>%
+  select(Study, Link)
+  
+}, escape = FALSE, options = list(scrollY = '500px', paging = FALSE, ordering = FALSE, searching = FALSE, dom = "t", columns = list(
+                   list(title = ""),
+                   list(title = "")
+                 )))
+```
 
 ***
 
 Commentary:
 
-- Feature quote:
+- The relevant text from the report goes here (edited to make sense in this format if needed).
+
+### 2. Use probability ranges (predictive intervals) to emphasize uncertainty when point estimates are not available or appropriate; wide ranges indicate more uncertainty.
+
+<font size=3.5px>
+
+**Recommendation #2:** Use probability ranges (predictive intervals) to emphasize uncertainty when point estimates are not available or appropriate; wide ranges indicate more uncertainty. 
+
+**Example:** 
+
+- **Replace**: The forecast is rapidly evolving, but there is a slight (15%) chance that we will see more than 10 inches of snow in the metro area tomorrow morning.
+- **With**: The forecast is rapidly evolving, but there is a slight (10% to 20%) chance that we will see more than 10 inches of snow in the metro area tomorrow morning.
 
 
+**Example Studies**: <a href = "https://doi.org/10.1155/2017/3932565">Grounds et al (2017)</a> and <a href = "https://doi.org/10.1175/WCAS-D-18-0136.1">Løhre et al. (2019)</a>
+
+<br>
+**All Relevant / Supporting Studies:** </font>
+
+```{r}
+cf2_studies <- data.findings %>%
+  filter(ID == "170" | ID == "171" | ID == "194" | ID == "116") 
+
+renderDataTable({
+
+data %>%
+  filter(str_detect(toString(cf2_studies$'Studies Cited'), data$`Full ID`)) %>%
+  mutate(Link = paste0('<a href = "https://doi.org/', DOI, '">Link to Article</a>')) %>%
+  select(Study, Link)
+  
+}, escape = FALSE, options = list(scrollY = '500px', paging = FALSE, ordering = FALSE, searching = FALSE, dom = "t", columns = list(
+                   list(title = ""),
+                   list(title = "")
+                 )))
+```
+
+***
+
+Commentary:
+
+- The relevant text from the report goes here (edited to make sense in this format if needed).
+
+### 3. Include numeric translations next to words / phrases that indicate probability information.
+
+<font size=3.5px>
+
+**Recommendation #3:** Include numeric translations next to words / phrases that indicate probability information.
+
+**Example:** 
+
+- **Replace**: Severe thunderstorms are possible this evening.
+- **With**: With: Severe thunderstorms are possible (20% to 30% chance) this evening.
+
+
+**Example Studies**: <a href = "https://doi.org/10.1038/nclimate2194">Budescu et al. (2014)</a>
+
+<br>
+**All Relevant / Supporting Studies:** </font>
+
+```{r}
+cf3_studies <- data.findings %>%
+  filter(ID == "119" | ID == "120" | ID == "121") 
+
+renderDataTable({
+
+data %>%
+  filter(str_detect(toString(cf3_studies$'Studies Cited'), data$`Full ID`)) %>%
+  mutate(Link = paste0('<a href = "https://doi.org/', DOI, '">Link to Article</a>')) %>%
+  select(Study, Link)
+  
+}, escape = FALSE, options = list(scrollY = '500px', paging = FALSE, ordering = FALSE, searching = FALSE, dom = "t", columns = list(
+                   list(title = ""),
+                   list(title = "")
+                 )))
+```
+
+***
+
+Commentary:
+
+- The relevant text from the report goes here (edited to make sense in this format if needed).
+
+### 4. If comprehension is especially important, use numeric probabilities alone or first (before words/phrases). 
+
+<font size=3.5px>
+
+**Recommendation #4:** If comprehension is especially important, use numeric probabilities alone or first (before words/phrases). 
+
+**Example:** 
+
+- **Replace**: Severe thunderstorms are possible (20% to 30% chance) this evening.
+- **With**: There is a 20% to 30% chance of thunderstorms this evening.
+
+
+**Example Studies**: <a href = "https://doi.org/10.1002/bdm.2072">Jenkins et al. (2019)</a>
+
+<br>
+**All Relevant / Supporting Studies:** </font>
+
+```{r}
+cf4_studies <- data.findings %>%
+   filter(ID == "119" | ID == "120" | ID == "121" | ID == "122") 
+
+renderDataTable({
+
+data %>%
+  filter(str_detect(toString(cf4_studies$'Studies Cited'), data$`Full ID`)) %>%
+  mutate(Link = paste0('<a href = "https://doi.org/', DOI, '">Link to Article</a>')) %>%
+  select(Study, Link)
+  
+}, escape = FALSE, options = list(scrollY = '500px', paging = FALSE, ordering = FALSE, searching = FALSE, dom = "t", columns = list(
+                   list(title = ""),
+                   list(title = "")
+                 )))
+```
+
+***
+
+Commentary:
+
+- The relevant text from the report goes here (edited to make sense in this format if needed).
+
+### 5. When using words and phrases to communicate probability information, include rank adjectives (like low, medium, and high) to indicate the magnitude of the probability; this is especially important if numeric translations are not available.
+
+<font size=3.5px>
+
+**Recommendation #5:** When using words and phrases to communicate probability information, include rank adjectives (like low, medium, and high) to indicate the magnitude of the probability; this is especially important if numeric translations are not available.
+
+**Example:** 
+
+- **Replace**: There is a chance of snow and ice this morning along I-75.
+- **With**: There is a low/medium/high chance of snow and ice this morning along I-75.
+
+
+**Example Studies**: <a href = "https://doi.org/10.15191/nwajom.2020.0805">Lenhardt et al. (2020)</a>
+
+<br>
+**All Relevant / Supporting Studies:** </font>
+
+```{r}
+# I think we probably need to sit down and create exhaustive / updated lists of all the studies relevant to each recommendation, then use that instead of the ones from data.findings
+# This table and the one for Rec 12 will stay commented out since there's not really a way to do this for those recommendations until we make new lists
+
+# cf5_studies <- data.findings %>%
+#    filter(ID == "119" | ID == "120" | ID == "121" | ID == "122") 
+# 
+# renderDataTable({
+# 
+# data %>%
+#   filter(str_detect(toString(cf5_studies$'Studies Cited'), data$`Full ID`)) %>%
+#   mutate(Link = paste0('<a href = "https://doi.org/', DOI, '">Link to Article</a>')) %>%
+#   select(Study, Link)
+#   
+# }, escape = FALSE, options = list(scrollY = '500px', paging = FALSE, ordering = FALSE, searching = FALSE, dom = "t", columns = list(
+#                    list(title = ""),
+#                    list(title = "")
+#                  )))
+```
+
+***
+
+Commentary:
+
+- The relevant text from the report goes here (edited to make sense in this format if needed).
+
+### 6. Use probability (percentage) formats when possible; frequency (fraction) formats can be effective, but they can also generate confusion.
+
+<font size=3.5px>
+
+**Recommendation #6:** Use probability (percentage) formats when possible; frequency (fraction) formats can be effective, but they can also generate confusion.
+
+**Example:** 
+
+- **Replace**: There is a 1 in 10 chance that this storm will produce a tornado.
+- **With**: There is a 10% chance that this storm will produce a tornado.
+
+
+**Example Studies**: <a href = "https://doi.org/10.1177/0272989X08315246">Cuite et al. (2008)</a> and <a href = "https://doi.org/10.1002/met.121">Joslyn & Nichols (2009)</a>
+
+<br>
+**All Relevant / Supporting Studies:** </font>
+
+```{r}
+cf6_studies <- data.findings %>%
+   filter(ID == "131" | ID == "132" | ID == "133" | ID == "134") 
+
+renderDataTable({
+
+data %>%
+  filter(str_detect(toString(cf6_studies$'Studies Cited'), data$`Full ID`)) %>%
+  mutate(Link = paste0('<a href = "https://doi.org/', DOI, '">Link to Article</a>')) %>%
+  select(Study, Link)
+  
+}, escape = FALSE, options = list(scrollY = '500px', paging = FALSE, ordering = FALSE, searching = FALSE, dom = "t", columns = list(
+                   list(title = ""),
+                   list(title = "")
+                 )))
+```
+
+***
+
+Commentary:
+
+- The relevant text from the report goes here (edited to make sense in this format if needed).
+
+### 7. When using frequency (fraction) formats, use 1 in X formats in place of X and NX formats.
+
+<font size=3.5px>
+
+**Recommendation #7:** When using frequency (fraction) formats, use 1 in X formats in place of X and NX formats.
+
+**Example:** 
+
+- **Replace**: Recent models indicate that there is a 20 in 100 chance that this storm will cause significant storm surge in the New Orleans area.
+- **With**: Recent models indicate that there is a 1 in 5 chance that this storm will cause significant storm surge in the New Orleans area.
+
+
+**Example Studies**: <a href = "https://doi.org/10.1177/0272989X11403490">Pighin et al. (2011)</a>
+
+<br>
+**All Relevant / Supporting Studies:** </font>
+
+```{r}
+cf7_studies <- data.findings %>%
+   filter(ID == "135") 
+
+renderDataTable({
+
+data %>%
+  filter(str_detect(toString(cf7_studies$'Studies Cited'), data$`Full ID`)) %>%
+  mutate(Link = paste0('<a href = "https://doi.org/', DOI, '">Link to Article</a>')) %>%
+  select(Study, Link)
+  
+}, escape = FALSE, options = list(scrollY = '500px', paging = FALSE, ordering = FALSE, searching = FALSE, dom = "t", columns = list(
+                   list(title = ""),
+                   list(title = "")
+                 )))
+```
+
+***
+
+Commentary:
+
+NOTE: This might get re-written; it's mostly here as a placeholder / example of how I want these pages to look. I intend to essentially copy / paste over the relevant paragraph(s) from our report into the commentary section of each practical recommendation.
+
+Frequency formats, which present probabilistic information as a “1 in X” and “X in NX “ chance, have been found to influence risk comprehension in a number of ways. For example, Pighin, et al. (2015) assessed the effects of format ("1 in X" or "N in NX") on the interpretations of risk information. They observed that individuals had elevated perceptions of risk when shown the “1 in X” format as compared to the “N in NX format”. Interestingly, this was still true despite no observed effect on comprehension (Pighin et al. 2015). Oudhoff and Timmermans (2015) examined format and graphic effects on decisions to engage in risk-laden activities. They noted that the “1-in-X” format yielded higher perceived likelihoods and appeared to be the easiest format to interpret; however, graphs primarily affect perceptions of likelihood among people with lower numeracy (Oudhoff & Timmermans 2015). Denes-Raj, Epstein, and Cole (1995) investigated the effects of using a “1 in X” format compared to “N in NX” format in order to better understand how ratio bias plays a role in decision making. Their research suggested that although ratio bias is common, it is not ubiquitous across different situations (Denes-Raj, Epstein & Cole 1995). 
+
+### 8. Include information about the reference class when using probability information.
+
+<font size=3.5px>
+
+**Recommendation #8:** Include information about the reference class when using probability information. 
+
+**Example:** 
+
+- **Replace**: There is a low chance of tornadoes in the Oklahoma City metro area tomorrow afternoon and evening.
+- **With**: There is a low (2%) chance of tornadoes in the Oklahoma City metro area tomorrow afternoon and evening; on 1 in 50 days like today, there will be a tornado within 25 miles of your location.
+
+
+**Example Studies**: <a href = "https://doi.org/10.1111/j.1539-6924.2005.00608.x">Gigerenzer et. al. (2005)</a> and <a href = "https://doi.org/10.1080/20445911.2018.1553884">Juanchich & Sirota (2018)</a>
+
+<br>
+**All Relevant / Supporting Studies:** </font>
+
+```{r}
+cf8_studies <- data.findings %>%
+   filter(ID == "133" | ID == "153") 
+
+renderDataTable({
+
+data %>%
+  filter(str_detect(toString(cf8_studies$'Studies Cited'), data$`Full ID`)) %>%
+  mutate(Link = paste0('<a href = "https://doi.org/', DOI, '">Link to Article</a>')) %>%
+  select(Study, Link)
+  
+}, escape = FALSE, options = list(scrollY = '500px', paging = FALSE, ordering = FALSE, searching = FALSE, dom = "t", columns = list(
+                   list(title = ""),
+                   list(title = "")
+                 )))
+```
+
+***
+
+Commentary:
+
+- The relevant text from the report goes here (edited to make sense in this format if needed).
+
+### 9. Be aware of “directionality” when using probability information; positive frames can promote comprehension by encouraging people to focus on the events that are most likely to happen, whereas negative frames can promote risk aversion by encouraging people to focus on the possibility of negative events, even if they are unlikely.
+
+<font size=3.5px>
+
+**Recommendation #9:** Be aware of “directionality” when using probability information; positive frames can promote comprehension by encouraging people to focus on the events that are most likely to happen, whereas negative frames can promote risk aversion by encouraging people to focus on the possibility of negative events, even if they are unlikely. 
+
+**Example:** 
+
+- **Replace**: There is a high (90%) chance of sunny skies today.
+- **With**: There is a low (10%) chance of freezing drizzle today.
+
+
+**Example Studies**: <a href = "https://doi.org/10.1080/17470218.2016.1225779">Honda & Yamagishi (2017)</a> and <a href = "https://doi.org/10.1006/obhd.1999.2857">Teigen & Brun (2003)</a>
+
+<br>
+**All Relevant / Supporting Studies:** </font>
+```{r}
+cf9_studies <- data.findings %>%
+  filter(ID == "107") 
+
+renderDataTable({
+
+data %>%
+  filter(str_detect(toString(cf9_studies$'Studies Cited'), data$`Full ID`)) %>%
+  mutate(Link = paste0('<a href = "https://doi.org/', DOI, '">Link to Article</a>')) %>%
+  select(Study, Link)
+  
+}, escape = FALSE, options = list(scrollY = '500px', paging = FALSE, ordering = FALSE, searching = FALSE, dom = "t", columns = list(
+                   list(title = ""),
+                   list(title = "")
+                 )))
+```
+
+***
+
+Commentary:
+
+- The relevant text from the report goes here (edited to make sense in this format if needed).
+
+### 10. When possible, include probability information in forecast visualizations.
+
+<font size=3.5px>
+
+**Recommendation #10:** When possible, include probability information in forecast visualizations. 
+
+**Example:** 
+
+- **Replace**: Maps showing deterministic warning boxes/polygons.
+- **With**: Maps showing probabilistic information; for example: probability grids (FACETs); Potential Storm Surge Flooding map (NHC).
+
+
+**Example Studies**: <a href = "https://doi.org/10.1175/WCAS-D-18-0094.1">Gerst et al. (2020)</a>
+
+<br>
+**All Relevant / Supporting Studies:** </font>
+
+```{r}
+cf10_studies <- data.findings %>%
+   filter(ID == "191" | ID == "209") 
+
+renderDataTable({
+
+data %>%
+  filter(str_detect(toString(cf10_studies$'Studies Cited'), data$`Full ID`)) %>%
+  mutate(Link = paste0('<a href = "https://doi.org/', DOI, '">Link to Article</a>')) %>%
+  select(Study, Link)
+  
+}, escape = FALSE, options = list(scrollY = '500px', paging = FALSE, ordering = FALSE, searching = FALSE, dom = "t", columns = list(
+                   list(title = ""),
+                   list(title = "")
+                 )))
+```
+
+***
+
+Commentary:
+
+- The relevant text from the report goes here (edited to make sense in this format if needed).
+
+### 11. Use visualizations to increase comprehension of probability information; icon arrays and ensemble plots can be especially effective when teaching people how to interpret probability information. Note: this might not be appropriate immediately before or during high impact events.
+
+<font size=3.5px>
+
+**Recommendation #11:** Use visualizations to increase comprehension of probability information; icon arrays and ensemble plots can be especially effective when teaching people how to interpret probability information. Note: this might not be appropriate immediately before or during high impact events.
+
+**Example:** 
+
+- **Replace**: Models indicate that there is an 80% to 90% chance that hurricane force winds will affect Miami, FL in the next 5 days.
+- **With**: 
+
+
+**Example Studies**: <a href = "https://doi.org/10.1177/1473871618807121">Toet et al. (2019)</a> and <a href = "https://doi.org/10.1002/bdm.1797">Garcia-Retamero & Cokely (2014)</a>
+
+<br>
+**All Relevant / Supporting Studies:** </font>
+
+```{r}
+cf11_studies <- data.findings %>%
+   filter(ID == "207" | ID == "208" | ID == "212") 
+
+renderDataTable({
+
+data %>%
+  filter(str_detect(toString(cf11_studies$'Studies Cited'), data$`Full ID`)) %>%
+  mutate(Link = paste0('<a href = "https://doi.org/', DOI, '">Link to Article</a>')) %>%
+  select(Study, Link)
+  
+}, escape = FALSE, options = list(scrollY = '500px', paging = FALSE, ordering = FALSE, searching = FALSE, dom = "t", columns = list(
+                   list(title = ""),
+                   list(title = "")
+                 )))
+```
+
+***
+
+Commentary:
+
+- The relevant text from the report goes here (edited to make sense in this format if needed).
+
+### 12. Pay attention to the audience when using probability information; most people are able to grasp basic probability information, but a lot depends on numeracy and experience.
+
+<font size=3.5px>
+
+**Recommendation #12:** Pay attention to the audience when using probability information; most people are able to grasp basic probability information, but a lot depends on numeracy and experience.
+
+**Example Studies**: <a href = "https://doi.org/10.1111/disa.12293">Wernstedt et al. (2018)</a> and <a href = "https://doi.org/10.1111/j.1539-6924.2009.01279.x">Dieckmann et al. (2009)</a>
+
+<br>
+**All Relevant / Supporting Studies:** </font>
+
+```{r}
+# cf12_studies <- data.findings %>%
+#    filter(ID == "") 
+# 
+# renderDataTable({
+# 
+# data %>%
+#   filter(str_detect(toString(cf12_studies$'Studies Cited'), data$`Full ID`)) %>%
+#   mutate(Link = paste0('<a href = "https://doi.org/', DOI, '">Link to Article</a>')) %>%
+#   select(Study, Link)
+#   
+# }, escape = FALSE, options = list(scrollY = '500px', paging = FALSE, ordering = FALSE, searching = FALSE, dom = "t", columns = list(
+#                    list(title = ""),
+#                    list(title = "")
+#                  )))
+```
+
+***
+
+Commentary:
+
+- The relevant text from the report goes here (edited to make sense in this format if needed).
