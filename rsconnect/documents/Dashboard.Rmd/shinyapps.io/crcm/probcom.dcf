@@ -5,8 +5,8 @@ account: crcm
 server: shinyapps.io
 hostUrl: https://api.shinyapps.io/v1
 appId: 3089005
-bundleId: 3867078
+bundleId: 3975654
 url: https://crcm.shinyapps.io/probcom/
-when: 1605538609.2057
+when: 1607700152.43488
 asMultiple: FALSE
 asStatic: FALSE
