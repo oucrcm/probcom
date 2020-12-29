@@ -27,17 +27,8 @@ library(stringr)
 data <- readRDS("data_extraction.Rds")
 data.findings <- readRDS("data_findings.Rds")
 
-data$`Formats / Framing` <- ifelse(str_detect(data$`Topic(s)`, "Formats / Framing"), 1, 0)
-data$`Verbal Expressions` <- ifelse(str_detect(data$`Topic(s)`, "Verbal Expressions"), 1, 0)
-data$`Visualizations` <- ifelse(str_detect(data$`Topic(s)`, "Visualizations"), 1, 0)
-data$`General Understanding` <- ifelse(str_detect(data$`Topic(s)`, "General Understanding"), 1, 0)
-data$`Prob. vs. Det.` <- ifelse(str_detect(data$`Topic(s)`, "Prob. vs. Det."), 1, 0)
-data$`Opinions / Perceptions` <- ifelse(str_detect(data$`Topic(s)`, "Opinions / Perceptions"), 1, 0)
-data$`Small / Long-term risk` <- ifelse(str_detect(data$`Topic(s)`, "Small / Long-term risk"), 1, 0)
-data$`Affect / Emotion` <- ifelse(str_detect(data$`Topic(s)`, "Affect / Emotion"), 1, 0)
-data$`Other / Misc.` <- ifelse(str_detect(data$`Topic(s)`, "Other / Misc."), 1, 0)
-
 data <- data %>% 
+  mutate(ID = paste0(`Article ID`, `Study ID`)) %>%
   rename(
     cod_1 = 'Coder',
     cod_2 = 'Coder 2',
@@ -154,10 +145,15 @@ Column
 font.size <- "10pt"
 DT::datatable(data %>% select(Study, 
                               `Summary of Findings`, 
-                              `Topic(s)`, 
+                              `Cited in Report`:`Not Cited`, 
                               `Internal Validity` = int, 
                               `External Validity` = ext, 
-                              `Domain Validity` = dom),
+                              `Domain Validity` = dom) %>% 
+                mutate_all(~str_replace_na(., "")) %>% 
+                mutate(`Topic(s)` = paste(`Cited in Report`, `Cited in Report II`, `Cited in Report III`, `Not Cited`, sep = "; ")) %>% 
+                mutate(`Topic(s)` = str_replace(`Topic(s)`, "; ; ; ", "")) %>%
+                mutate(`Topic(s)` = str_replace(`Topic(s)`, "; ; ", "")) %>% 
+                select(-c(`Cited in Report`:`Not Cited`)),
               filter = "top",
               selection = "single",
               rownames = FALSE,
@@ -221,65 +217,239 @@ select_react <- reactive({
 State of the Literature {.storyboard}
 =========================================
 
-### We are able to identify eight common topics in the literature on risk communication using probability information. *Formats & Framing* is the most frequent topic of study.
+**This page summarizes the state of the literature by plotting the percentage and mean validity of studies that address 5 primary and 14 secondary topics that are common in the literature. While this list of topics is likely to grow as the review continues, an examination of the relative frequency and validity of each topic provides valuable information about the *quantity* and *quality* of evidence we are able to identify in each topic area at a given point in time.**
+
+### Percentage of studies that address primary topics of relevance.
 
 ```{r}
-topic_frequency <- data %>% 
-#  filter(`Study ID` == "01") %>%  # this line make the chart reflect only unique papers, not unique studies within those papers.
-  select(`Formats / Framing`:`Other / Misc.`) %>% 
-  summarise_all(mean) %>% 
-  gather(topic, prop)
+main_topics <- data %>% 
+  select(ID = `Article ID`, `Cited in Report`:`Not Cited`) %>% 
+  distinct(ID, .keep_all = TRUE) %>% 
+  pivot_longer(`Cited in Report`:`Not Cited`) %>% 
+  drop_na(value) %>% mutate(
+    topic = case_when(
+      value %in% c("Understanding Probability Information", 
+                   "Probabilistic vs. Deterministic Information") ~ "(a) Public Understanding and\nUse of Probability Information\nin Decision Making",
+      value %in% c("Numeric Translations of Words and Phrases", 
+                   "Verbal Directionality and Reference Points", 
+                   "Severity and Probability Conflation", 
+                   "Choosing Words and Phrases") ~ "(b) Communicating Probability\nInformation Using Words\nand Phrases",
+      value %in% c("Percentages", "Frequencies", 
+                   "Reference Class Ambiguity", 
+                   "Numeric Directionality and Reference Points") ~ "(c) Communicating Probability\nInformation Using Numbers",
+      value %in% c("Non-Weather Visualizations", 
+                   "Weather Visualizations", 
+                   "General Visualization Advice", "") ~ "(d) Communicating Probability\nInformation Using Visualizations",
+      value %in% c("Communicating to a Heterogeneous Population") ~ "(e) Communicating Probability\nInformation to a Heterogeneous\nPopulation")) %>% 
+  filter(value != "Visualizations Intro")
 
-topic_frequency$topic <- factor(topic_frequency$topic, levels = topic_frequency$topic,
-                                labels = c("Formats &\nFraming", "Verbal\nExpressions", "Visualizations", 
-                                           "General\nUnderstanding", "Prob. vs. Det.", "Opinions &\nPerceptions", 
-                                           "Small &\nLong-term Risks", "Affect &\nEmotion", "Other\nMisc."))
+main_topics$topic <- factor(main_topics$topic)
+main_topics$topic <- factor(main_topics$topic, levels = rev(levels(main_topics$topic)))
 
-propPlot <- ggplot(topic_frequency, aes(x = topic, 
-                                        y = prop, 
-                                        fill = prop, 
-                                        text = paste0("Topic: ", topic, "<br>", 
-                                                      "Proportion of Studies: ", round(prop, 2) * 100, "%"))) +
+main_freq_plot <- main_topics %>% 
+  group_by(topic) %>% 
+  summarise(n = n()) %>%
+  drop_na() %>% 
+  mutate(p = n / sum(n)) %>% 
+  ggplot(., aes(y = topic, x = p, fill = topic, text = paste0(round(p * 100), "%"))) +
   geom_bar(stat = "identity") +
-  scale_y_continuous(labels = scales::percent, limits = c(0, 0.35)) + 
-  labs(y = "Studies (%)", x = "Study Topic") +
-  theme_minimal(base_size = 14) +
-  theme(axis.text.x = element_text(size = 12)) +
+  scale_x_continuous(labels = scales::percent, limits = c(0, 0.3)) + 
+  labs(x = "Studies in the Review") +
+  theme_minimal(base_size = 10) +
+  theme(axis.text.x = element_text(size = 10),
+        axis.title.y = element_blank()) +
   guides(fill = FALSE) +
-  scale_fill_viridis_c()
+  scale_fill_manual(values = rev(viridis::cividis(5))) +
+  theme(legend.position = 'none')
 
 renderPlotly({
-  ggplotly(propPlot, tooltip = c("text")) %>%
-    layout(xaxis = list(fixedrange = TRUE), yaxis = list(fixedrange = TRUE))
-})
+  ggplotly(main_freq_plot, tooltip = c("text"))
+  })
 ```
 
-***
-
-The common topics are:
-
-1. **General Understanding**:
-2. **Verbal Expressions**:
-3. **Formats / Framing**:
-4. **Visualizations**:
-5. **Prob. vs. Det**:
-6. **Opinions / Perceptions**:
-7. **Affect / Emotion**:
-8. **Small / Long-term risk**:
-
-### Sentence.
+### Percentage of studies within each primary topic that address secondary topics of relevance.
 
 ```{r}
-# topic plot
+secondary_topics <- data %>% 
+  select(ID = `Article ID`, `Cited in Report`:`Not Cited`) %>% 
+  distinct(ID, .keep_all = TRUE) %>% 
+  pivot_longer(`Cited in Report`:`Not Cited`) %>% 
+  drop_na(value) %>% 
+  mutate(
+    topic = case_when(
+      value %in% c("Understanding Probability Information", 
+                   "Probabilistic vs. Deterministic Information") ~ "(a) Public Understanding and Use of Probability Information in Decision Making",
+      value %in% c("Numeric Translations of Words and Phrases", 
+                   "Verbal Directionality and Reference Points", 
+                   "Severity and Probability Conflation", 
+                   "Choosing Words and Phrases") ~ "(b) Communicating Probability Information Using Words and Phrases",
+      value %in% c("Percentages", 
+                   "Frequencies", 
+                   "Reference Class Ambiguity", 
+                   "Numeric Directionality and Reference Points") ~ "(c) Communicating Probability Information Using Numbers",
+      value %in% c("Non-Weather Visualizations", 
+                   "Weather Visualizations", 
+                   "General Visualization Advice", "") ~ "(d) Communicating Probability Information Using Visualizations",
+      value %in% c("Communicating to a Heterogeneous Population") ~ "(e) Communicating Probability Information to a Heterogeneous Population")) %>% 
+  mutate(sub_topic = case_when(
+    value %in% c("Understanding Probability Information") ~ "(1) Understanding Probability Information", 
+    value %in% c("Probabilistic vs. Deterministic Information") ~ "(2) Probabilistic vs. Deterministic Information",
+    value %in% c("Numeric Translations of Words and Phrases") ~ "(1) Numeric Translations of Words and Phrases", 
+    value %in% c("Verbal Directionality and Reference Points") ~ "(2) Directionality and Reference Points", 
+    value %in% c("Severity and Probability Conflation") ~ "(3) Severity and Probability Conflation", 
+    value %in% c("Choosing Words and Phrases") ~ "(4) Choosing Words and Phrases",
+    value %in% c("Percentages") ~ "(1) Probabilities as Percentages", 
+    value %in% c("Frequencies") ~ "(2) Probabilities as Frequencies", 
+    value %in% c("Reference Class Ambiguity") ~ "(3) Reference Class Ambiguity", 
+    value %in% c("Numeric Directionality and Reference Points") ~ "(4) Directionality and Reference Points",
+    value %in% c("Non-Weather Visualizations") ~ "(1) Visualizations in Non-Weather Domains",
+    value %in% c("Weather Visualizations") ~ "(2) Visualizations in Weather Domains",
+    value %in% c("General Visualization Advice") ~ "(3) General Visualization Advice")) %>% 
+  filter(value != "Visualizations Intro")
+
+secondary_topics$topic <- factor(secondary_topics$topic)
+secondary_topics$sub_topic <- factor(secondary_topics$sub_topic)
+secondary_topics$sub_topic <- factor(secondary_topics$sub_topic, levels = rev(levels(secondary_topics$sub_topic)))
+
+secondary_freq_plot <- secondary_topics %>% 
+  group_by(topic, sub_topic) %>% 
+  summarise(n = n()) %>%
+  drop_na() %>% 
+  mutate(p = n / sum(n)) %>% 
+  ggplot(., aes(y = sub_topic, x = p, fill = topic, text = paste0(round(p * 100), "%"))) +
+  geom_bar(stat = "identity") +
+  scale_x_continuous(labels = scales::percent, limits = c(0, 0.7)) + 
+  labs(x = "Studies in the Review") +
+  theme_minimal(base_size = 10) +
+  theme(axis.text.x = element_text(size = 10),
+        axis.text.y = element_text(size = 8),
+        axis.title.y = element_blank(),
+        strip.text = element_text(angle = 0, hjust = 0)) +
+  guides(fill = FALSE) +
+  facet_wrap(~topic, scales = "free_y", nrow = 4) +
+  scale_fill_manual(values = viridis::cividis(5)[1:4]) +
+  theme(legend.position = 'none')
+
+renderPlotly({
+  ggplotly(secondary_freq_plot, tooltip = c("text"))
+  })
 ```
 
-***
+### Mean validity of studies that address primary topics of relevance.
 
-Commentary:
+```{r}
+validity <- data %>% 
+  select(ID = `Article ID`, int, ext, dom, `Cited in Report`, `Cited in Report II`, `Cited in Report III`, `Not Cited`) %>% 
+  distinct(ID, .keep_all = TRUE) %>% 
+  pivot_longer(`Cited in Report`:`Not Cited`) %>% 
+  drop_na(value) %>% 
+  mutate(
+    topic = case_when(
+      value %in% c("Understanding Probability Information", 
+                   "Probabilistic vs. Deterministic Information") ~ "(1) Public Understanding and Use of\nProbability Information in Decision Making",
+      value %in% c("Numeric Translations of Words and Phrases", 
+                   "Verbal Directionality and Reference Points", 
+                   "Severity and Probability Conflation", 
+                   "Choosing Words and Phrases") ~ "(2) Communicating Probability Information\nUsing Words and Phrases",
+      value %in% c("Percentages", 
+                   "Frequencies", 
+                   "Reference Class Ambiguity", 
+                   "Numeric Directionality and Reference Points") ~ "(3) Communicating Probability\nInformation Using Numbers",
+      value %in% c("Non-Weather Visualizations", 
+                   "Weather Visualizations", 
+                   "General Visualization Advice", "") ~ "(4) Communicating Probability\nInformation Using Visualizations",
+      value %in% c("Communicating to a Heterogeneous Population") ~ "(5) Communicating Probability Information\nto a Heterogeneous Population")) %>% 
+  mutate(topic = factor(topic, levels = c("(5) Communicating Probability Information\nto a Heterogeneous Population", 
+                                          "(4) Communicating Probability\nInformation Using Visualizations",
+                                          "(3) Communicating Probability\nInformation Using Numbers",
+                                          "(2) Communicating Probability Information\nUsing Words and Phrases",
+                                          "(1) Public Understanding and Use of\nProbability Information in Decision Making"))) %>% 
+  mutate(sub_topic = case_when(
+    value %in% c("Understanding Probability Information") ~ "(a) Understanding\nProbability\nInformation", 
+    value %in% c("Probabilistic vs. Deterministic Information") ~ "(b) Probabilistic vs.\nDeterministic Information",
+    value %in% c("Numeric Translations of Words and Phrases") ~ "(a) Numeric Translations\nof Words and Phrases", 
+    value %in% c("Verbal Directionality and Reference Points") ~ "(b) Directionality and Reference Points", 
+    value %in% c("Severity and Probability Conflation") ~ "(c) Severity and\nProbability Conflation", 
+    value %in% c("Choosing Words and Phrases") ~ "(d) Choosing Words\nand Phrases",
+    value %in% c("Percentages") ~ "(a) Probabilities\nas Percentages", 
+    value %in% c("Frequencies") ~ "(b) Probabilities\nas Frequencies", 
+    value %in% c("Reference Class Ambiguity") ~ "(c) Reference Class Ambiguity", 
+    value %in% c("Numeric Directionality and Reference Points") ~ "(d) Directionality and\nReference Points",
+    value %in% c("Non-Weather Visualizations") ~ "(a) Visualizations in\nNon-Weather Domains",
+    value %in% c("Weather Visualizations") ~ "(b) Visualizations\nin Weather Domains",
+    value %in% c("General Visualization Advice") ~ "(c) General Visualization\nAdvice")) %>% 
+  filter(value != "Visualizations Intro")
+  
+means <- validity %>% 
+  summarise(int = mean(int, na.rm = TRUE), ext = mean(ext, na.rm = TRUE), dom = mean(dom, na.rm = TRUE)) 
+  
+primary_valid_plot <- validity %>%
+  group_by(topic) %>% 
+  summarise(int = mean(int, na.rm = TRUE), ext = mean(ext, na.rm = TRUE), dom = mean(dom, na.rm = TRUE)) %>% 
+  drop_na() %>% 
+  mutate(ave = (int + ext + dom) / 3) %>% 
+  ggplot(., aes(x = int, y = ext, size = dom, color = topic, 
+                text = paste('Topic: ', topic,
+                             '<br>Internal Validity:', round(int, 2), 
+                             '<br>External Validity:', round(ext, 2),
+                             '<br>Domain Validity:', round(dom, 2)))) + 
+  geom_vline(xintercept = means$int, linetype = "dashed", alpha = 0.3) +
+  geom_hline(yintercept = means$ext, linetype = "dashed", alpha = 0.3) +
+  geom_point() +
+  labs(x = "Internal Validity (Causality)", 
+       y = "External Validity (Generalizability)", 
+       caption = "Sizes of the points indicate mean domain validity") +
+  theme_minimal(base_size = 10) +
+  guides(color = FALSE, size = FALSE) +
+  scale_size(range = c(10, 25)) +
+  scale_color_manual(values = rev(viridis::cividis(5))) +
+  theme(legend.position = 'none')
 
-- Text
-- Text
-- Text
+renderPlotly({
+  ggplotly(primary_valid_plot, tooltip = c("text"))
+  })
+```
+
+### Mean validity of studies within each primary topic that address secondary topics or relevance.
+
+```{r}
+secondary_valid_plot <- validity %>%
+  group_by(topic, sub_topic) %>% 
+  summarise(int = mean(int, na.rm = TRUE), ext = mean(ext, na.rm = TRUE), dom = mean(dom, na.rm = TRUE)) %>% 
+  drop_na() %>% 
+  mutate(topic = factor(topic, levels = rev(c("(5) Communicating Probability Information\nto a Heterogeneous Population", 
+                                              "(4) Communicating Probability\nInformation Using Visualizations",
+                                              "(3) Communicating Probability\nInformation Using Numbers",
+                                              "(2) Communicating Probability Information\nUsing Words and Phrases",
+                                              "(1) Public Understanding and Use of\nProbability Information in Decision Making")), 
+         labels = rev(c("(5) Communicating Probability Information to a Heterogeneous Population", 
+                        "(4) Communicating Probability Information Using Visualizations",
+                        "(3) Communicating Probability Information Using Numbers",
+                        "(2) Communicating Probability Information Using Words and Phrases",
+                        "(1) Public Understanding and Use of Probability Information in Decision Making")))) %>% 
+  ggplot(., aes(x = int, y = ext, size = dom, color = topic, 
+                text = paste('Topic: ', sub_topic,
+                             '<br>Internal Validity:', round(int, 2), 
+                             '<br>External Validity:', round(ext, 2),
+                             '<br>Domain Validity:', round(dom, 2)))) + 
+  geom_vline(xintercept = means$int, linetype = "dashed", alpha = 0.3) +
+  geom_hline(yintercept = means$ext, linetype = "dashed", alpha = 0.3) +
+  geom_point() +
+  labs(x = "Internal Validity (Causality)", 
+       y = "External Validity (Generalizability)", 
+       caption = "Sizes of the points indicate mean domain validity") +
+  theme_minimal(base_size = 10) +
+  guides(color = FALSE, size = FALSE) +
+  scale_size(range = c(10 / 3, 25 / 3)) +
+  facet_wrap(~topic) +
+  scale_color_manual(values = viridis::cividis(5)[1:4]) +
+  theme(legend.position = 'none')
+
+renderPlotly({
+  ggplotly(secondary_valid_plot, tooltip = c("text"))
+  })
+```
+
 
 Core Findings {data-orientation=rows}
 =========================================
