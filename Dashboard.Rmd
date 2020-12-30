@@ -1,5 +1,5 @@
 ---
-title: "Living Review"
+title: "ProbCom"
 runtime: shiny
 output: 
   flexdashboard::flex_dashboard:
@@ -16,6 +16,7 @@ library(plotly)
 library(shiny)
 library(formattable)
 library(stringr)
+library(colorspace)
 
 # Get latest data; note: cannot connect to Google in application. Must save files locally.
 # data <- read_sheet("https://docs.google.com/spreadsheets/d/1IyHoJpZiOV6_0soAgWqEoDCK4Uh9OnvxxaL0aRryN5M/edit#gid=0", sheet = "Data Extraction")
@@ -80,11 +81,11 @@ Systematic reviews generally include some combination of the following steps:
 3. Extract key topics, questions, methods, and findings from relevant studies
 4. Evaluate the quality of relevant studies
 5. Analyze and combine the studies to identify common topics, questions, methods, and findings
-6. Define confidence levels for common findings
 
-This review includes one more step:
+This review includes two more steps:
 
-7. Assess common findings to develop recommendations to assist in communicating uncertainty and probabilities
+6. Assess common findings to develop recommendations to assist in communicating uncertainty and probabilities
+7. Develop a living platform that incorporates new studies and relevant findings into the review as they become available
 
 **Steps in This Review**
 
@@ -92,29 +93,15 @@ This review includes one more step:
 
 ***2. Search for and identify relevant studies.*** Consistent with best practices, we use three iterative methods to search for and identify relevant studies: (1) electronic search databases; (2) other literature reviews; and (3) citation chains. We use three electronic search databases (ProQuest, Web of Science, and EBSCO Academic Search Elite) to search for studies about probabilistic risk/uncertainty communication in the weather and climate domain that use quantitative methodologies. At the start of this review, these searches resulted in 1,559 potentially relevant studies; 31 met the inclusion criteria---they were original research articles that fit the study domain. Next, we use other reviews of the literature to identify potentially relevant studies. To begin this review, we used 12 other reviews that mentioned 147 potentially relevant studies; 37 met the inclusion criteria for this review. Finally, we use citation chains to identify references IN and references TO relevant studies that we identify in electronic databases and other reviews. For example, we began this review by identifying 68 relevant studies in electronic databases and other reviews. There were 2,312 references IN the first set of relevant studies; 120 met the inclusion criteria. There were 3,268 references TO the first set of relevant studies; 140 met the inclusion criteria. In sum, we were able to find 324 unique studies to begin this review. Many of these studies report results from multiple studies. If the studies are sufficiently different (e.g., use a different sample, focus on a different topic), we treat them separately. So, though this review began with 324 complete studies (articles), we actually evaluate and analyze results from 509 distinct studies. Because this is a living systematic review, it is important to note that this is only the beginning of the review. We plan to repeat the steps above every 6 months to make sure that we are including the most up-to-date research.
 
-```{r, fig.align = "center", fig.width = 7, fig.cap = "Fig. 1: Flow Diagram of the Search Relevant Studies"}
-# mermaid("
-# graph LR
-# 1(<center>Electronic Databases<br>n = 31</center>) --> 3{<center>First Set<br>of Relevant<br>Studies<br>n = 68</center>}
-# 2(<center>Literature Reviews<br>n = 38</center>) --> 3
-# 3 --> 4(<center>References IN<br>n = 120</center>)
-# 3 --> 5(<center>References TO<br>n = XXX</center>)
-# 4 --> 6{<center>Second Set<br>of Relevant<br>Studies<br>n = XXX</center>}
-# 5 --> 6
-# 6 --> 7[<center>Total<br>Relevant<br>Studies<br>n = 504</center>]
-# ")
-include_graphics("flowchart.png")
-```
-
 ***3. Extract key topics, questions, methods, and findings from relevant studies.*** We carefully look through each relevant study to extract key topic areas, research questions, research methods, and findings, and keep track of these details in a database.
 
 ***4. Evaluate the quality of relevant studies.*** We use three indicators of validity to assess the quality of each study: (1) external validity (are the results generalizable to the population of interest?); (2) internal validity (are we sure that variation in x causes variation in y?); and (3) domain validity (how relevant is the study domain to weather hazards and forecasting?). Each dimension is independently given a score by two researchers on a three point scale (1 = low; 2 = medium; 3 = high). We use the mean value of these scores to measure validity along each dimension and overall validity of each study.
 
 ***5. Analyze and combine the studies to identify common topics, questions, methods, and findings.*** We use the database of key topics, questions, methods, and findings from each study to identify commonalities across the relevant studies. Broadly, most of the studies that are currently in the review ask one of two research questions: (1) How does probability information impact risk comprehension? (2) How does probability information impact protective action decisions, intentions, and/or behaviors? A significant majority of the studies use survey research and quantitative analysis (statistics) to address these questions. Many of the studies employ survey experiments to compare the impact of one type of probability information (e.g., a slight chance of rain) to the impact of an alternative way of the present the same information (e.g., a 20% chance of rain). We are able to identify eight common topics that ten or more of the current relevant studies address. For example, the most common topic is Formats & Framing. Studies in this topic address key questions about how to present probabilities---as percentages, fractions, odds, etc. Many studies address multiple topics at once, such as Formats & Framing and Visualizations. Following topic identification, we identify core findings in each topic area. For example, a core finding in the Verbal Probability topic is: Do not assume that a verbal probability term or statement (such as very likely) will be interpreted the same way by everyone, as there is strong evidence that people interpret such terms much more ambiguously and heterogeneously than most realize. Verbal expressions describing probabilities close to 0%, 50%, and 100% are the least prone to such ambiguity. In most cases core findings receive support from multiple studies. In a select few instances, core findings may come from a single high-quality study.
 
-***6. Define confidence levels for common findings.*** We use three indicators to provide confidence levels on each of the common findings: (1) consistency of evidence (do all studies say the same thing?); quantity of evidence (how many studies are there?); and quality of evidence (on average, how much validity do studies have?). Each dimension is given a score on a three point scale (1 = low; 2 = medium; 3 = high). We use the mean value of these scores to assess net confidence in each core finding.
+***6. Assess common findings to develop recommendations to assist in communicating uncertainty and probabilities.*** This is the most difficult and subjective step in the systematic review. In this step, we work as a team to translate core findings into actionable recommendations. This is challenging because we have to decide which of the core findings are certain and relevant enough to support a recommendation. Relevancy is the primary challenge. Many studies in this review advance basic science but do not relate the findings to specific communication challenges. While valuable, it can be difficult to translate these findings into actionable advice for risk communicators. In addition, many studies in the review provide actionable advice on how to communicate probability in domains like healthcare. Again, the insight from these studies can be extremely valuable but difficult to translate into actionable advice for risk communicators who work in extreme weather/climate domains. This is where the subjectivity enters into the process. We pick the core findings that we believe are most relevant to risk communicators in extreme weather/climate domains below. We provide the core findings that we believe are certain and relevant enough to support tangible recommendations. We also include a communication example and example study for each recommendation. While we have extensive experience working with risk communicators in this domain, we cannot know or define everything that might be relevant. We therefore urge risk communicators to carefully examine core findings on their own to see if there might be something of relevance that we are missing in the list of recommendations.
 
-***7. Assess common findings to develop recommendations to assist in communicating uncertainty and probabilities.*** This is the most difficult and subjective step in the systematic review. In this step, we work as a team to translate core findings into actionable recommendations. This is challenging because we have to decide which of the core findings are certain and relevant enough to support a recommendation. Relevancy is the primary challenge. Many studies in this review advance basic science but do not relate the findings to specific communication challenges. While valuable, it can be difficult to translate these findings into actionable advice for risk communicators. In addition, many studies in the review provide actionable advice on how to communicate probability in domains like healthcare. Again, the insight from these studies can be extremely valuable but difficult to translate into actionable advice for risk communicators who work in extreme weather/climate domains. This is where the subjectivity enters into the process. We pick the core findings that we believe are most relevant to risk communicators in extreme weather/climate domains below. We provide the core findings that we believe are certain and relevant enough to support tangible recommendations. We also include a communication example and example study for each recommendation. While we have extensive experience working with risk communicators in this domain, we cannot know or define everything that might be relevant. We therefore urge risk communicators to carefully examine core findings on their own to see if there might be something of relevance that we are missing in the list of recommendations.
+***7. Develop a living platform that incorporates new studies and relevant findings into the review as they become available.*** Looks like you made it to the *ProbCom* platform---take a look and let us know if you have any questions!
 
 Bibliographic Archive 
 =========================================
@@ -229,18 +216,18 @@ main_topics <- data %>%
   drop_na(value) %>% mutate(
     topic = case_when(
       value %in% c("Understanding Probability Information", 
-                   "Probabilistic vs. Deterministic Information") ~ "(a) Public Understanding and\nUse of Probability Information\nin Decision Making",
+                   "Probabilistic vs. Deterministic Information") ~ "(a) Public Understanding and Use of Prob. Info. in Decision Making",
       value %in% c("Numeric Translations of Words and Phrases", 
                    "Verbal Directionality and Reference Points", 
                    "Severity and Probability Conflation", 
-                   "Choosing Words and Phrases") ~ "(b) Communicating Probability\nInformation Using Words\nand Phrases",
+                   "Choosing Words and Phrases") ~ "(b) Communicating Prob. Info. Using Words and Phrases",
       value %in% c("Percentages", "Frequencies", 
                    "Reference Class Ambiguity", 
-                   "Numeric Directionality and Reference Points") ~ "(c) Communicating Probability\nInformation Using Numbers",
+                   "Numeric Directionality and Reference Points") ~ "(c) Communicating Prob. Info. Using Numbers",
       value %in% c("Non-Weather Visualizations", 
                    "Weather Visualizations", 
-                   "General Visualization Advice", "") ~ "(d) Communicating Probability\nInformation Using Visualizations",
-      value %in% c("Communicating to a Heterogeneous Population") ~ "(e) Communicating Probability\nInformation to a Heterogeneous\nPopulation")) %>% 
+                   "General Visualization Advice", "") ~ "(d) Communicating Prob. Info. Using Visualizations",
+      value %in% c("Communicating to a Heterogeneous Population") ~ "(e) Communicating Prob. Info. to a Heterogeneous Population")) %>% 
   filter(value != "Visualizations Intro")
 
 main_topics$topic <- factor(main_topics$topic)
@@ -255,11 +242,10 @@ main_freq_plot <- main_topics %>%
   geom_bar(stat = "identity") +
   scale_x_continuous(labels = scales::percent, limits = c(0, 0.3)) + 
   labs(x = "Studies in the Review") +
-  theme_minimal(base_size = 10) +
-  theme(axis.text.x = element_text(size = 10),
-        axis.title.y = element_blank()) +
+  theme_bw(base_size = 16) +
+  theme(axis.title.y = element_blank()) +
   guides(fill = FALSE) +
-  scale_fill_manual(values = rev(viridis::cividis(5))) +
+  scale_color_manual(values = rev(qualitative_hcl(5))) +
   theme(legend.position = 'none')
 
 renderPlotly({
@@ -278,19 +264,19 @@ secondary_topics <- data %>%
   mutate(
     topic = case_when(
       value %in% c("Understanding Probability Information", 
-                   "Probabilistic vs. Deterministic Information") ~ "(a) Public Understanding and Use of Probability Information in Decision Making",
+                   "Probabilistic vs. Deterministic Information") ~ "(a) Public Understanding and Use of Prob. Info. in Decision Making",
       value %in% c("Numeric Translations of Words and Phrases", 
                    "Verbal Directionality and Reference Points", 
                    "Severity and Probability Conflation", 
-                   "Choosing Words and Phrases") ~ "(b) Communicating Probability Information Using Words and Phrases",
+                   "Choosing Words and Phrases") ~ "(b) Communicating Prob. Info. Using Words and Phrases",
       value %in% c("Percentages", 
                    "Frequencies", 
                    "Reference Class Ambiguity", 
-                   "Numeric Directionality and Reference Points") ~ "(c) Communicating Probability Information Using Numbers",
+                   "Numeric Directionality and Reference Points") ~ "(c) Communicating Prob. Info. Using Numbers",
       value %in% c("Non-Weather Visualizations", 
                    "Weather Visualizations", 
-                   "General Visualization Advice", "") ~ "(d) Communicating Probability Information Using Visualizations",
-      value %in% c("Communicating to a Heterogeneous Population") ~ "(e) Communicating Probability Information to a Heterogeneous Population")) %>% 
+                   "General Visualization Advice", "") ~ "(d) Communicating Prob. Info. Using Visualizations",
+      value %in% c("Communicating to a Heterogeneous Population") ~ "(e) Communicating Prob. Info. to a Heterogeneous Population")) %>% 
   mutate(sub_topic = case_when(
     value %in% c("Understanding Probability Information") ~ "(1) Understanding Probability Information", 
     value %in% c("Probabilistic vs. Deterministic Information") ~ "(2) Probabilistic vs. Deterministic Information",
@@ -320,14 +306,11 @@ secondary_freq_plot <- secondary_topics %>%
   geom_bar(stat = "identity") +
   scale_x_continuous(labels = scales::percent, limits = c(0, 0.7)) + 
   labs(x = "Studies in the Review") +
-  theme_minimal(base_size = 10) +
-  theme(axis.text.x = element_text(size = 10),
-        axis.text.y = element_text(size = 8),
-        axis.title.y = element_blank(),
-        strip.text = element_text(angle = 0, hjust = 0)) +
+  theme_bw(base_size = 16) +
+  theme(axis.title.y = element_blank()) +
   guides(fill = FALSE) +
   facet_wrap(~topic, scales = "free_y", nrow = 4) +
-  scale_fill_manual(values = viridis::cividis(5)[1:4]) +
+  scale_color_manual(values = qualitative_hcl(5)[1:4]) +
   theme(legend.position = 'none')
 
 renderPlotly({
@@ -346,24 +329,24 @@ validity <- data %>%
   mutate(
     topic = case_when(
       value %in% c("Understanding Probability Information", 
-                   "Probabilistic vs. Deterministic Information") ~ "(1) Public Understanding and Use of\nProbability Information in Decision Making",
+                   "Probabilistic vs. Deterministic Information") ~ "(1) Public Understanding and Use of Prob. Info. in Decision Making",
       value %in% c("Numeric Translations of Words and Phrases", 
                    "Verbal Directionality and Reference Points", 
                    "Severity and Probability Conflation", 
-                   "Choosing Words and Phrases") ~ "(2) Communicating Probability Information\nUsing Words and Phrases",
+                   "Choosing Words and Phrases") ~ "(2) Communicating Prob. Info. Using Words and Phrases",
       value %in% c("Percentages", 
                    "Frequencies", 
                    "Reference Class Ambiguity", 
-                   "Numeric Directionality and Reference Points") ~ "(3) Communicating Probability\nInformation Using Numbers",
+                   "Numeric Directionality and Reference Points") ~ "(3) Communicating Prob. Info. Using Numbers",
       value %in% c("Non-Weather Visualizations", 
                    "Weather Visualizations", 
-                   "General Visualization Advice", "") ~ "(4) Communicating Probability\nInformation Using Visualizations",
-      value %in% c("Communicating to a Heterogeneous Population") ~ "(5) Communicating Probability Information\nto a Heterogeneous Population")) %>% 
-  mutate(topic = factor(topic, levels = c("(5) Communicating Probability Information\nto a Heterogeneous Population", 
-                                          "(4) Communicating Probability\nInformation Using Visualizations",
-                                          "(3) Communicating Probability\nInformation Using Numbers",
-                                          "(2) Communicating Probability Information\nUsing Words and Phrases",
-                                          "(1) Public Understanding and Use of\nProbability Information in Decision Making"))) %>% 
+                   "General Visualization Advice", "") ~ "(4) Communicating Prob. Info. Using Visualizations",
+      value %in% c("Communicating to a Heterogeneous Population") ~ "(5) Communicating Prob. Info. to a Heterogeneous Population")) %>% 
+  mutate(topic = factor(topic, levels = c("(5) Communicating Prob. Info. to a Heterogeneous Population", 
+                                          "(4) Communicating Prob. Info. Using Visualizations",
+                                          "(3) Communicating Prob. Info. Using Numbers",
+                                          "(2) Communicating Prob. Info. Using Words and Phrases",
+                                          "(1) Public Understanding and Use of Prob. Info. in Decision Making"))) %>% 
   mutate(sub_topic = case_when(
     value %in% c("Understanding Probability Information") ~ "(a) Understanding\nProbability\nInformation", 
     value %in% c("Probabilistic vs. Deterministic Information") ~ "(b) Probabilistic vs.\nDeterministic Information",
@@ -395,18 +378,19 @@ primary_valid_plot <- validity %>%
                              '<br>Domain Validity:', round(dom, 2)))) + 
   geom_vline(xintercept = means$int, linetype = "dashed", alpha = 0.3) +
   geom_hline(yintercept = means$ext, linetype = "dashed", alpha = 0.3) +
-  geom_point() +
-  labs(x = "Internal Validity (Causality)", 
-       y = "External Validity (Generalizability)", 
+  geom_point(alpha = 0.5) +
+  labs(x = "Internal Validity (Causality)\n", 
+       y = "\nExternal Validity (Generalizability)", 
        caption = "Sizes of the points indicate mean domain validity") +
-  theme_minimal(base_size = 10) +
+  theme_bw(base_size = 15) +
   guides(color = FALSE, size = FALSE) +
   scale_size(range = c(10, 25)) +
-  scale_color_manual(values = rev(viridis::cividis(5))) +
+  scale_color_manual(values = rev(qualitative_hcl(5))) +
   theme(legend.position = 'none')
 
 renderPlotly({
-  ggplotly(primary_valid_plot, tooltip = c("text"))
+  ggplotly(primary_valid_plot, tooltip = c("text")) %>% 
+    layout(margin = list(b = 50, l = 50))
   })
 ```
 
@@ -417,16 +401,16 @@ secondary_valid_plot <- validity %>%
   group_by(topic, sub_topic) %>% 
   summarise(int = mean(int, na.rm = TRUE), ext = mean(ext, na.rm = TRUE), dom = mean(dom, na.rm = TRUE)) %>% 
   drop_na() %>% 
-  mutate(topic = factor(topic, levels = rev(c("(5) Communicating Probability Information\nto a Heterogeneous Population", 
-                                              "(4) Communicating Probability\nInformation Using Visualizations",
-                                              "(3) Communicating Probability\nInformation Using Numbers",
-                                              "(2) Communicating Probability Information\nUsing Words and Phrases",
-                                              "(1) Public Understanding and Use of\nProbability Information in Decision Making")), 
-         labels = rev(c("(5) Communicating Probability Information to a Heterogeneous Population", 
-                        "(4) Communicating Probability Information Using Visualizations",
-                        "(3) Communicating Probability Information Using Numbers",
-                        "(2) Communicating Probability Information Using Words and Phrases",
-                        "(1) Public Understanding and Use of Probability Information in Decision Making")))) %>% 
+  mutate(topic = factor(topic, levels = rev(c("(5) Communicating Prob. Info. to a Heterogeneous Population", 
+                                              "(4) Communicating Prob. Info. Using Visualizations",
+                                              "(3) Communicating Prob. Info. Using Numbers",
+                                              "(2) Communicating Prob. Info. Using Words and Phrases",
+                                              "(1) Public Understanding and Use of Prob. Info. in Decision Making")), 
+         labels = rev(c("(5) Communicating Prob. Info. to a Heterogeneous Population", 
+                        "(4) Communicating Prob. Info. Using Visualizations",
+                        "(3) Communicating Prob. Info. Using Numbers",
+                        "(2) Communicating Prob. Info. Using Words and Phrases",
+                        "(1) Public Understanding and Use of Prob. Info. in Decision Making")))) %>% 
   ggplot(., aes(x = int, y = ext, size = dom, color = topic, 
                 text = paste('Topic: ', sub_topic,
                              '<br>Internal Validity:', round(int, 2), 
@@ -434,19 +418,20 @@ secondary_valid_plot <- validity %>%
                              '<br>Domain Validity:', round(dom, 2)))) + 
   geom_vline(xintercept = means$int, linetype = "dashed", alpha = 0.3) +
   geom_hline(yintercept = means$ext, linetype = "dashed", alpha = 0.3) +
-  geom_point() +
+  geom_point(alpha = 0.5) +
   labs(x = "Internal Validity (Causality)", 
        y = "External Validity (Generalizability)", 
        caption = "Sizes of the points indicate mean domain validity") +
-  theme_minimal(base_size = 10) +
+  theme_bw(base_size = 15) +
   guides(color = FALSE, size = FALSE) +
-  scale_size(range = c(10 / 3, 25 / 3)) +
+  scale_size(range = c(10 / 2, 25 / 2)) +
   facet_wrap(~topic) +
-  scale_color_manual(values = viridis::cividis(5)[1:4]) +
+  scale_color_manual(values = qualitative_hcl(5)[1:4]) +
   theme(legend.position = 'none')
 
 renderPlotly({
-  ggplotly(secondary_valid_plot, tooltip = c("text"))
+  ggplotly(secondary_valid_plot, tooltip = c("text")) %>% 
+    layout(margin = list(b = 50, l = 100))
   })
 ```
 
@@ -580,6 +565,8 @@ finding_react <- reactive({
 
 Practical Recommendations {.storyboard}
 =========================================
+
+**This page provides a list of recommendations to forecasters. This is very challenging because we have to decide which of the core findings are certain and relevant enough to support a recommendation. While we have extensive experience working with forecasters, we cannot know or define everything that might be relevant. We therefore urge visitors to carefully examine core findings on their own to see if there might be something of relevance that we are missing in the list of recommendations.** 
 
 ### 1. Use probability information in lieu of deterministic information.
 
