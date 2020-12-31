@@ -1,4 +1,4 @@
-<center> **Living Systematic Review of Research on Communicating Probability Information** </center> 
+**Living Systematic Review of Research on Communicating Probability Information**
 
 **Motivation**
 
