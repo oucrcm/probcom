@@ -131,7 +131,7 @@ Column
 # Renders the full list of studies. Also acts as the input for the Study Details table above.
 font.size <- "10pt"
 DT::datatable(data %>% select(Study, 
-                              `Summary of Findings`, 
+                              `Abstract`, 
                               `Cited in Report`:`Not Cited`, 
                               `Internal Validity` = int, 
                               `External Validity` = ext, 
