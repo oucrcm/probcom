@@ -6,6 +6,18 @@ output:
     storyboard: true
 ---
 
+<head>
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-218322184-2"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-218322184-2');
+</script>
+</head> 
+
 ```{r libraries and data, include=FALSE}
 library(flexdashboard)
 library(knitr)
@@ -562,448 +574,497 @@ finding_react <- reactive({
 
 ```
 
-
-Practical Recommendations {.storyboard}
+Practical Recommendations
 =========================================
 
-**This page provides a list of recommendations to forecasters. This is very challenging because we have to decide which of the core findings are certain and relevant enough to support a recommendation. While we have extensive experience working with forecasters, we cannot know or define everything that might be relevant. We therefore urge visitors to carefully examine core findings on their own to see if there might be something of relevance that we are missing in the list of recommendations.** 
-
-### 1. Use probability information in lieu of deterministic information.
-
-<font size=3.5px>
-
-**Recommendation #1:** Use probability information in lieu of deterministic information.
-
-**Example:** 
-
-- **Replace**: These storms will cause heavy downpours and flooding.
-- **With**: There is an extremely high (90%) chance that these storms will cause heavy downpours and flooding.
-
-
-**Example Studies**: <a href = "https://doi.org/10.1037/a0025185">Joslyn & LeClerc (2012)</a> and <a href = "https://doi.org/10.1037/xap0000165">Grounds & Joslyn (2018)</a>
-
-<br>
-**All Relevant / Supporting Studies:** </font>
-
 ```{r}
-cf1_studies <- data.findings %>%
-  filter(ID == "124" | ID == "187" | ID == "196") 
+recs_data <- tibble(
+  Recommendation = c(
+    "Use probability information in place of deterministic statements in forecasts.",
+    "Use numeric point estimates if they are available and appropriate; if they are not, use numeric probability ranges or predictive intervals to emphasize uncertainty.",
+    "Include numeric translations next to words/phrases that indicate probability information.",
+    "If comprehension of probability information is especially important, use numeric probabilities alone or first (before words/phrases).",
+    "When using words and phrases to communicate probability information, include rank adjectives (like low, medium, and high) to indicate the magnitude of the probability; this is especially important if numeric translations are not available.",
+    "Use probability (percentage) formats when possible; frequency (fraction) formats can be effective, but they can also generate confusion.",
+    "Include information about the reference class when using probability information.",
+    "Be aware of directionality; positive statements, which focus on the probability that an event will happen, can promote overestimation and unnecessary protective actions; negative statements, which focus on the probability that an event will not happen can promote underestimation and underreaction.",
+    "When possible, include probability information in forecast visualizations.",
+    "Use visualizations to increase comprehension of probability information; icon arrays and ensemble plots can be especially effective when teaching people how to interpret probability information. Note: this might not be appropriate immediately before or during high impact events.",
+    "Pay attention to the audience when using probability information; most people can grasp basic probability information, but depth of comprehension depends on numeracy and experience."),
+  Example = c(
+    "Replace: These storms will cause heavy downpours and flooding.<br/>With: There is an extremely high (90%) chance that these storms will cause heavy downpours and flooding.",
+    "Replace: The forecast is rapidly evolving, but we may see more than 10 inches of snow in the metro area tomorrow morning.<br/>With (point estimate): The forecast is rapidly evolving, but there is a 15% chance that we will see more than 10 inches of snow in the metro area tomorrow morning.<br/>Or (predictive interval): The forecast is rapidly evolving, but there is a 50% chance that we will see 6 to 14 inches of snow in the metro area tomorrow morning.",
+    "Replace: Thunderstorms are possible this evening.<br/>With: Thunderstorms are possible (30% chance) this evening.",
+    "Replace: Thunderstorms are possible (30% chance) this evening.<br/>With: There is a 30% chance of thunderstorms this evening.",
+    "Replace: There is a chance of snow and ice this morning along I-75.<br/>With: There is a low/medium/high chance of snow and ice this morning along I-75.",
+    "Replace: There is a 1 in 10 chance that this storm will produce a tornado.<br/>With: There is a 10% chance that this storm will produce a tornado.",
+    "Replace: There is a low chance of tornadoes in the Oklahoma City metro area tomorrow afternoon and evening.<br/>With: There is a low (2%) chance of tornadoes in the Oklahoma City metro area tomorrow afternoon and evening; on 1 in 50 days like today, there will be a tornado within 25 miles of your location.",
+    "Positive statement: There is a small chance of drizzle this morning.<br/>Negative statement: Drizzle is unlikely this morning.",
+    "Supplement: Maps showing deterministic warning boxes/polygons.<br/>With: Maps showing probability information; for example: probability grids (FACETs); Potential Storm Surge Flooding map (NHC).",
+    "Supplement: Models indicate that there is an 80% to 90% chance that hurricane force winds will affect Miami, FL in the next 5 days.<br/>With: Probabilistic wind speed graphic with an icon array that explains the probability information in the product.",
+    ""),
+  `Exemplary Studies` = c(
+    "<a href='https://doi.org/10.1037/a0025185'>Joslyn & LeClerc (2012);<a><br/><a href='https://doi.org/10.1037/xap0000165'>Grounds & Joslyn (2018)<a>",
+    "<a href='https://doi.org/10.1155/2017/3932565'>Grounds et al (2017);<a><br/><a href='https://doi.org/10.1002/bdm.2132'>Løhre et al. (2019)<a>",
+    "<a href='https://doi.org/10.1038/nclimate2194'>Budescu et al. (2014)<a>",
+    "<a href='https://doi.org/10.1080/13669877.2018.1440415'>Jenkins et al. (2019)<a>",
+    "<a href='https://doi.org/10.15191/nwajom.2020.0805'>Lenhardt et al. (2020)<a>",
+    "<a https://doi.org/10.1177/0272989X08315246'>Cuite et al. (2008)<a>;<br/><a href='https://doi.org/10.1002/met.121'>Joslyn & Nichols (2009)<a>",
+    "<a https://doi.org/10.1111/j.1539-6924.2005.00608.x'>Gigerenzer et. al. (2005);<a><br/><a https://doi.org/10.1080/20445911.2018.1553884'>Juanchich & Sirota (2018)<a>",
+    "<a https://doi.org/10.1080/17470218.2016.1225779'>Honda & Yamagishi (2017);<a><br/><a https://doi.org/10.1002/bdm.432'>Teigen & Brun (2003)<a>",
+    "<a href='https://doi.org/10.1175/WCAS-D-18-0094.1'>Gerst et al. (2020)<a>",
+    "<a href='https://doi.org/10.1177/1473871618807121'>Toet et al. (2019);<a><br/><a href='https://doi.org/10.1002/bdm.1797'>Garcia-Retamero & Cokely (2014)<a>",
+    "<a href='https://doi.org/10.1111/j.1539-6924.2009.01279.x'>Dieckmann et al. (2009)<a>"))
 
-renderDataTable({
-
-data %>%
-  filter(str_detect(toString(cf1_studies$'Studies Cited'), data$`Full ID`)) %>%
-  mutate(Link = paste0('<a href = "https://doi.org/', DOI, '">Link to Article</a>')) %>%
-  select(Study, Link)
-  
-}, escape = FALSE, options = list(scrollY = '500px', paging = FALSE, ordering = FALSE, searching = FALSE, dom = "t", columns = list(
-                   list(title = ""),
-                   list(title = "")
-                 )))
+  DT::datatable(recs_data,
+              rownames = TRUE,
+              style = "bootstrap",
+              options = list(dom = "Brtip", pageLength = 11, ordering = FALSE),
+              escape = FALSE, 
+              fillContainer = FALSE)
 ```
 
-***
+<!-- Practical Recommendations {.storyboard} -->
+<!-- ========================================= -->
 
-**Notes:** Does the public actually understand, use, and benefit from probability information, or are they better off with deterministic statements? Some forecasters express a desire to "boil down" complex probability information to a deterministic point forecast for fear of confusing members of the public (Pappenberger et al. 2013). However, the evidence in this review suggests quite strongly that those fears are unfounded. Nearly all of the studies we review indicate that people make better decisions, have higher trust in information, and/or display a greater understanding of forecast information when shown a probabilistic forecast instead of a deterministic one (Ash et al. 2014; Bolton and Katok 2018; Grounds and Joslyn 2018; Grounds et al. 2017; Joslyn and LeClerc 2012; Joslyn and LeClerc 2016; Joslyn and Demnitz 2019; Joslyn et al. 2007; LeClerc and Joslyn 2012; Marimo et al. 2015; Miran et al. 2018; Nadav-Greenberg and Joslyn 2009; Roulston and Kaplan 2009; Roulston et al. 2006; Joslyn and Grounds 2015). The majority of these studies are firmly situated in the context of weather; however, it is important to note that both experts and the public sometimes have difficulty interpreting probability information, and different ways of communicating risk can lead to variation in understanding (Bramwell et al. 2006). Taken together, the studies in this review indicate a very strong and consistent pattern of results throughout the literature -- simple probabilistic forecasts outperform deterministic ones in almost all situations and by almost all metrics. This does not mean that the average forecast end-user is a competent statistician; in fact, many of these studies emphasize the need to make probabilistic forecasts as straightforward and easy to understand as possible in order to avoid “information overload” (Durbach and Stewart 2011). It is also important to note that these findings refer to probability information beyond a general acknowledgement of epistemological uncertainty (e.g. “this forecast is based on estimates; it is impossible to ever know for sure what will happen”), as these types of overly broad statements can undermine trust in forecasts (Howe et al. 2019). This research should, however, reassure those who worry that the public will be confused by anything other than a deterministic forecast. 
+<!-- **This page provides a list of recommendations to forecasters. This is very challenging because we have to decide which of the core findings are certain and relevant enough to support a recommendation. While we have extensive experience working with forecasters, we cannot know or define everything that might be relevant. We therefore urge visitors to carefully examine core findings on their own to see if there might be something of relevance that we are missing in the list of recommendations.**  -->
 
+<!-- ### 1. Use probability information in lieu of deterministic information. -->
 
-### 2. Use probability ranges (predictive intervals) to emphasize uncertainty when point estimates are not available or appropriate; wide ranges indicate more uncertainty.
+<!-- <font size=3.5px> -->
 
-<font size=3.5px>
+<!-- **Recommendation #1:** Use probability information in lieu of deterministic information. -->
 
-**Recommendation #2:** Use probability ranges (predictive intervals) to emphasize uncertainty when point estimates are not available or appropriate; wide ranges indicate more uncertainty. 
+<!-- **Example:**  -->
 
-**Example:** 
+<!-- - **Replace**: These storms will cause heavy downpours and flooding. -->
+<!-- - **With**: There is an extremely high (90%) chance that these storms will cause heavy downpours and flooding. -->
 
-- **Replace**: The forecast is rapidly evolving, but there is a slight (15%) chance that we will see more than 10 inches of snow in the metro area tomorrow morning.
-- **With**: The forecast is rapidly evolving, but there is a slight (10% to 20%) chance that we will see more than 10 inches of snow in the metro area tomorrow morning.
 
+<!-- **Example Studies**: <a href = "https://doi.org/10.1037/a0025185">Joslyn & LeClerc (2012)</a> and <a href = "https://doi.org/10.1037/xap0000165">Grounds & Joslyn (2018)</a> -->
 
-**Example Studies**: <a href = "https://doi.org/10.1155/2017/3932565">Grounds et al (2017)</a> and <a href = "https://doi.org/10.1175/WCAS-D-18-0136.1">Løhre et al. (2019)</a>
+<!-- <br> -->
+<!-- **All Relevant / Supporting Studies:** </font> -->
 
-<br>
-**All Relevant / Supporting Studies:** </font>
+<!-- ```{r} -->
+<!-- cf1_studies <- data.findings %>% -->
+<!--   filter(ID == "124" | ID == "187" | ID == "196")  -->
 
-```{r}
-cf2_studies <- data.findings %>%
-  filter(ID == "170" | ID == "171" | ID == "194" | ID == "116") 
+<!-- renderDataTable({ -->
 
-renderDataTable({
+<!-- data %>% -->
+<!--   filter(str_detect(toString(cf1_studies$'Studies Cited'), data$`Full ID`)) %>% -->
+<!--   mutate(Link = paste0('<a href = "https://doi.org/', DOI, '">Link to Article</a>')) %>% -->
+<!--   select(Study, Link) -->
 
-data %>%
-  filter(str_detect(toString(cf2_studies$'Studies Cited'), data$`Full ID`)) %>%
-  mutate(Link = paste0('<a href = "https://doi.org/', DOI, '">Link to Article</a>')) %>%
-  select(Study, Link)
-  
-}, escape = FALSE, options = list(scrollY = '500px', paging = FALSE, ordering = FALSE, searching = FALSE, dom = "t", columns = list(
-                   list(title = ""),
-                   list(title = "")
-                 )))
-```
+<!-- }, escape = FALSE, options = list(scrollY = '500px', paging = FALSE, ordering = FALSE, searching = FALSE, dom = "t", columns = list( -->
+<!--                    list(title = ""), -->
+<!--                    list(title = "") -->
+<!--                  ))) -->
+<!-- ``` -->
 
-***
+<!-- *** -->
 
-**Notes:** If a point estimate like "30% chance" or "3 inches of rain" is unavailable or inappropriate, a confidence interval / range estimate like "20-30% chance" or "2.5-3.5 inches" is often an effective way of harnessing the benefits of providing probabilistic information to audiences. When using confidence intervals in communications, it is important to note the following: first, the size of a confidence interval can influence how people interpret a forecast - people seem to implicitly understand smaller confidence intervals to mean that a forecast is more technologically advanced and more certain (Teigen, Løhre, & Hohle 2018). Second, though confidence intervals are usually meant to denote that probabilities are normally distributed around a mean, most likely value, a plurality of people understand confidence intervals to mean that all values within the range were equally likely, an interpretation which is often incorrect. Clarifying how confidence intervals should be interpreted could help to offset this misunderstanding (Dieckmann et al 2015).
+<!-- **Notes:** Does the public actually understand, use, and benefit from probability information, or are they better off with deterministic statements? Some forecasters express a desire to "boil down" complex probability information to a deterministic point forecast for fear of confusing members of the public (Pappenberger et al. 2013). However, the evidence in this review suggests quite strongly that those fears are unfounded. Nearly all of the studies we review indicate that people make better decisions, have higher trust in information, and/or display a greater understanding of forecast information when shown a probabilistic forecast instead of a deterministic one (Ash et al. 2014; Bolton and Katok 2018; Grounds and Joslyn 2018; Grounds et al. 2017; Joslyn and LeClerc 2012; Joslyn and LeClerc 2016; Joslyn and Demnitz 2019; Joslyn et al. 2007; LeClerc and Joslyn 2012; Marimo et al. 2015; Miran et al. 2018; Nadav-Greenberg and Joslyn 2009; Roulston and Kaplan 2009; Roulston et al. 2006; Joslyn and Grounds 2015). The majority of these studies are firmly situated in the context of weather; however, it is important to note that both experts and the public sometimes have difficulty interpreting probability information, and different ways of communicating risk can lead to variation in understanding (Bramwell et al. 2006). Taken together, the studies in this review indicate a very strong and consistent pattern of results throughout the literature -- simple probabilistic forecasts outperform deterministic ones in almost all situations and by almost all metrics. This does not mean that the average forecast end-user is a competent statistician; in fact, many of these studies emphasize the need to make probabilistic forecasts as straightforward and easy to understand as possible in order to avoid “information overload” (Durbach and Stewart 2011). It is also important to note that these findings refer to probability information beyond a general acknowledgement of epistemological uncertainty (e.g. “this forecast is based on estimates; it is impossible to ever know for sure what will happen”), as these types of overly broad statements can undermine trust in forecasts (Howe et al. 2019). This research should, however, reassure those who worry that the public will be confused by anything other than a deterministic forecast.  -->
 
-### 3. Include numeric translations next to words / phrases that indicate probability information.
 
-<font size=3.5px>
+<!-- ### 2. Use probability ranges (predictive intervals) to emphasize uncertainty when point estimates are not available or appropriate; wide ranges indicate more uncertainty. -->
 
-**Recommendation #3:** Include numeric translations next to words / phrases that indicate probability information.
+<!-- <font size=3.5px> -->
 
-**Example:** 
+<!-- **Recommendation #2:** Use probability ranges (predictive intervals) to emphasize uncertainty when point estimates are not available or appropriate; wide ranges indicate more uncertainty.  -->
 
-- **Replace**: Severe thunderstorms are possible this evening.
-- **With**: With: Severe thunderstorms are possible (20% to 30% chance) this evening.
+<!-- **Example:**  -->
 
+<!-- - **Replace**: The forecast is rapidly evolving, but there is a slight (15%) chance that we will see more than 10 inches of snow in the metro area tomorrow morning. -->
+<!-- - **With**: The forecast is rapidly evolving, but there is a slight (10% to 20%) chance that we will see more than 10 inches of snow in the metro area tomorrow morning. -->
 
-**Example Studies**: <a href = "https://doi.org/10.1038/nclimate2194">Budescu et al. (2014)</a>
 
-<br>
-**All Relevant / Supporting Studies:** </font>
+<!-- **Example Studies**: <a href = "https://doi.org/10.1155/2017/3932565">Grounds et al (2017)</a> and <a href = "https://doi.org/10.1175/WCAS-D-18-0136.1">Løhre et al. (2019)</a> -->
 
-```{r}
-cf3_studies <- data.findings %>%
-  filter(ID == "119" | ID == "120" | ID == "121") 
+<!-- <br> -->
+<!-- **All Relevant / Supporting Studies:** </font> -->
 
-renderDataTable({
+<!-- ```{r} -->
+<!-- cf2_studies <- data.findings %>% -->
+<!--   filter(ID == "170" | ID == "171" | ID == "194" | ID == "116")  -->
 
-data %>%
-  filter(str_detect(toString(cf3_studies$'Studies Cited'), data$`Full ID`)) %>%
-  mutate(Link = paste0('<a href = "https://doi.org/', DOI, '">Link to Article</a>')) %>%
-  select(Study, Link)
-  
-}, escape = FALSE, options = list(scrollY = '500px', paging = FALSE, ordering = FALSE, searching = FALSE, dom = "t", columns = list(
-                   list(title = ""),
-                   list(title = "")
-                 )))
-```
+<!-- renderDataTable({ -->
 
-***
+<!-- data %>% -->
+<!--   filter(str_detect(toString(cf2_studies$'Studies Cited'), data$`Full ID`)) %>% -->
+<!--   mutate(Link = paste0('<a href = "https://doi.org/', DOI, '">Link to Article</a>')) %>% -->
+<!--   select(Study, Link) -->
 
-**Notes:** There is strong evidence that risk communicators should always include a numeric “translation” for any verbal probability expressions used, and that translation should appear directly in or next to the verbal expression itself  (Carey et al. 2018; Connelly and Knurth 1998; Dorval et al. 2013; Fortin et al. 2001; Hill et al. 2010; Zabini et al. 2015; Wintle et al. 2019). For example, a verbal expression like “severe thunderstorms are possible this evening” would be more effectively rephrased as “severe thunderstorms are possible (20% to 30% chance) this evening” (Budescu et al. 2014). Explicit statements of the upper and lower bound (e.g. 0-33%) implied by an expression (e.g. “likely” or “unlikely”) improve accuracy of interpretation vs. a statement alone (Harris et al. 2017). This is important not only because it helps people to correctly interpret the meaning of a forecast, but also because people generally prefer mixed formats (e.g. a numeric probability and a verbal probability expression together, or a number and a visualization) to singular ones (Carey et al. 2018; Connelly and Knurth 1998; Dorval et al. 2013; Fortin et al. 2001; Hill et al. 2010; Sink 1995; Zabini et al. 2015). Members of the public are able to demonstrate basic understanding of probabilistic forecasts; however, uncertainty is best communicated with a range of estimates rather than single points and through combined use of numeric and verbal expressions to meet the needs of heterogeneous audiences (Kox et al. 2015). Translations and numerical probabilities can sometimes lead to misinterpretation due to a number of factors related to both forecasters and audiences, such as use of correct terms, preferences, and numeracy (Sink 1995). Furthermore, translations are important because less numerate people tend to focus on narrative evidence when evaluating risk communications (the context, their perceptions regarding the likelihood of comparable events, etc.), while more numerate people tend to focus on the numeric probability of the risk (Budescu et al. 2009; Dieckmann et al. 2009; Budescu et al. 2012; Juanchich et al 2013; Mandel 2015).
+<!-- }, escape = FALSE, options = list(scrollY = '500px', paging = FALSE, ordering = FALSE, searching = FALSE, dom = "t", columns = list( -->
+<!--                    list(title = ""), -->
+<!--                    list(title = "") -->
+<!--                  ))) -->
+<!-- ``` -->
 
+<!-- *** -->
 
-### 4. If comprehension is especially important, use numeric probabilities alone or first (before words/phrases). 
+<!-- **Notes:** If a point estimate like "30% chance" or "3 inches of rain" is unavailable or inappropriate, a confidence interval / range estimate like "20-30% chance" or "2.5-3.5 inches" is often an effective way of harnessing the benefits of providing probabilistic information to audiences. When using confidence intervals in communications, it is important to note the following: first, the size of a confidence interval can influence how people interpret a forecast - people seem to implicitly understand smaller confidence intervals to mean that a forecast is more technologically advanced and more certain (Teigen, Løhre, & Hohle 2018). Second, though confidence intervals are usually meant to denote that probabilities are normally distributed around a mean, most likely value, a plurality of people understand confidence intervals to mean that all values within the range were equally likely, an interpretation which is often incorrect. Clarifying how confidence intervals should be interpreted could help to offset this misunderstanding (Dieckmann et al 2015). -->
 
-<font size=3.5px>
+<!-- ### 3. Include numeric translations next to words / phrases that indicate probability information. -->
 
-**Recommendation #4:** If comprehension is especially important, use numeric probabilities alone or first (before words/phrases). 
+<!-- <font size=3.5px> -->
 
-**Example:** 
+<!-- **Recommendation #3:** Include numeric translations next to words / phrases that indicate probability information. -->
 
-- **Replace**: Severe thunderstorms are possible (20% to 30% chance) this evening.
-- **With**: There is a 20% to 30% chance of thunderstorms this evening.
+<!-- **Example:**  -->
 
+<!-- - **Replace**: Severe thunderstorms are possible this evening. -->
+<!-- - **With**: With: Severe thunderstorms are possible (20% to 30% chance) this evening. -->
 
-**Example Studies**: <a href = "https://doi.org/10.1002/bdm.2072">Jenkins et al. (2019)</a>
 
-<br>
-**All Relevant / Supporting Studies:** </font>
+<!-- **Example Studies**: <a href = "https://doi.org/10.1038/nclimate2194">Budescu et al. (2014)</a> -->
 
-```{r}
-cf4_studies <- data.findings %>%
-   filter(ID == "119" | ID == "120" | ID == "121" | ID == "122") 
+<!-- <br> -->
+<!-- **All Relevant / Supporting Studies:** </font> -->
 
-renderDataTable({
+<!-- ```{r} -->
+<!-- cf3_studies <- data.findings %>% -->
+<!--   filter(ID == "119" | ID == "120" | ID == "121")  -->
 
-data %>%
-  filter(str_detect(toString(cf4_studies$'Studies Cited'), data$`Full ID`)) %>%
-  mutate(Link = paste0('<a href = "https://doi.org/', DOI, '">Link to Article</a>')) %>%
-  select(Study, Link)
-  
-}, escape = FALSE, options = list(scrollY = '500px', paging = FALSE, ordering = FALSE, searching = FALSE, dom = "t", columns = list(
-                   list(title = ""),
-                   list(title = "")
-                 )))
-```
+<!-- renderDataTable({ -->
 
-***
+<!-- data %>% -->
+<!--   filter(str_detect(toString(cf3_studies$'Studies Cited'), data$`Full ID`)) %>% -->
+<!--   mutate(Link = paste0('<a href = "https://doi.org/', DOI, '">Link to Article</a>')) %>% -->
+<!--   select(Study, Link) -->
 
-**Notes:** In addition to the findings supporting Recommendation #3, there is also evidence that numeric expressions of probability are better suited for communicating very sensitive or unlikely risks. In scenarios where underestimating risks could have disastrous consequences, it may be better to provide a number first, then use the verbal expression as a translation (opposite to the way the IPCC reports “translate” their uncertainty communications, for example) in order to minimize the “extremity effect” (Dilla & Stone 1997; Jenkins, Harris, & Lark 2018, Jenkins Harris, & Lark 2019; Patt & Dessai 2005; Windschitl et al. 2017). Purely verbal expressions of risk should generally be avoided, especially when the risk is particularly severe or the information is particularly critical for people to hear and understand. If for some reason you must choose between providing purely verbal or purely numeric information, numeric information should be prioritized because it is interpreted more consistently. There is also some evidence that people tend to be more comfortable with and trusting of purely numeric information as opposed to purely verbal information, and that purely verbal statements often lead people to overestimate risks (Budescu, Weinberg, & Wallsten 1988; Gurmankin et al. 2004; Knapp, Raynor, Woolf et. al. 2009; P. Knapp, Raynor, & Berry 2004).
+<!-- }, escape = FALSE, options = list(scrollY = '500px', paging = FALSE, ordering = FALSE, searching = FALSE, dom = "t", columns = list( -->
+<!--                    list(title = ""), -->
+<!--                    list(title = "") -->
+<!--                  ))) -->
+<!-- ``` -->
 
-### 5. When using words and phrases to communicate probability information, include rank adjectives (like low, medium, and high) to indicate the magnitude of the probability; this is especially important if numeric translations are not available.
+<!-- *** -->
 
-<font size=3.5px>
+<!-- **Notes:** There is strong evidence that risk communicators should always include a numeric “translation” for any verbal probability expressions used, and that translation should appear directly in or next to the verbal expression itself  (Carey et al. 2018; Connelly and Knurth 1998; Dorval et al. 2013; Fortin et al. 2001; Hill et al. 2010; Zabini et al. 2015; Wintle et al. 2019). For example, a verbal expression like “severe thunderstorms are possible this evening” would be more effectively rephrased as “severe thunderstorms are possible (20% to 30% chance) this evening” (Budescu et al. 2014). Explicit statements of the upper and lower bound (e.g. 0-33%) implied by an expression (e.g. “likely” or “unlikely”) improve accuracy of interpretation vs. a statement alone (Harris et al. 2017). This is important not only because it helps people to correctly interpret the meaning of a forecast, but also because people generally prefer mixed formats (e.g. a numeric probability and a verbal probability expression together, or a number and a visualization) to singular ones (Carey et al. 2018; Connelly and Knurth 1998; Dorval et al. 2013; Fortin et al. 2001; Hill et al. 2010; Sink 1995; Zabini et al. 2015). Members of the public are able to demonstrate basic understanding of probabilistic forecasts; however, uncertainty is best communicated with a range of estimates rather than single points and through combined use of numeric and verbal expressions to meet the needs of heterogeneous audiences (Kox et al. 2015). Translations and numerical probabilities can sometimes lead to misinterpretation due to a number of factors related to both forecasters and audiences, such as use of correct terms, preferences, and numeracy (Sink 1995). Furthermore, translations are important because less numerate people tend to focus on narrative evidence when evaluating risk communications (the context, their perceptions regarding the likelihood of comparable events, etc.), while more numerate people tend to focus on the numeric probability of the risk (Budescu et al. 2009; Dieckmann et al. 2009; Budescu et al. 2012; Juanchich et al 2013; Mandel 2015). -->
 
-**Recommendation #5:** When using words and phrases to communicate probability information, include rank adjectives (like low, medium, and high) to indicate the magnitude of the probability; this is especially important if numeric translations are not available.
 
-**Example:** 
+<!-- ### 4. If comprehension is especially important, use numeric probabilities alone or first (before words/phrases).  -->
 
-- **Replace**: There is a chance of snow and ice this morning along I-75.
-- **With**: There is a low/medium/high chance of snow and ice this morning along I-75.
+<!-- <font size=3.5px> -->
 
+<!-- **Recommendation #4:** If comprehension is especially important, use numeric probabilities alone or first (before words/phrases).  -->
 
-**Example Studies**: <a href = "https://doi.org/10.15191/nwajom.2020.0805">Lenhardt et al. (2020)</a>
+<!-- **Example:**  -->
 
-<br>
-**All Relevant / Supporting Studies:** </font>
+<!-- - **Replace**: Severe thunderstorms are possible (20% to 30% chance) this evening. -->
+<!-- - **With**: There is a 20% to 30% chance of thunderstorms this evening. -->
 
-```{r}
-cf5_studies <- data.findings %>%
-   filter()
 
-renderDataTable({
+<!-- **Example Studies**: <a href = "https://doi.org/10.1002/bdm.2072">Jenkins et al. (2019)</a> -->
 
-data %>%
-  filter(str_detect(toString(cf5_studies$'Studies Cited'), data$`Full ID`)) %>%
-  mutate(Link = paste0('<a href = "https://doi.org/', DOI, '">Link to Article</a>')) %>%
-  select(Study, Link)
+<!-- <br> -->
+<!-- **All Relevant / Supporting Studies:** </font> -->
 
-}, escape = FALSE, options = list(scrollY = '500px', paging = FALSE, ordering = FALSE, searching = FALSE, dom = "t", columns = list(
-                   list(title = ""),
-                   list(title = "")
-                 )))
-```
+<!-- ```{r} -->
+<!-- cf4_studies <- data.findings %>% -->
+<!--    filter(ID == "119" | ID == "120" | ID == "121" | ID == "122")  -->
 
-***
+<!-- renderDataTable({ -->
 
-**Notes:** 
+<!-- data %>% -->
+<!--   filter(str_detect(toString(cf4_studies$'Studies Cited'), data$`Full ID`)) %>% -->
+<!--   mutate(Link = paste0('<a href = "https://doi.org/', DOI, '">Link to Article</a>')) %>% -->
+<!--   select(Study, Link) -->
 
-- 
+<!-- }, escape = FALSE, options = list(scrollY = '500px', paging = FALSE, ordering = FALSE, searching = FALSE, dom = "t", columns = list( -->
+<!--                    list(title = ""), -->
+<!--                    list(title = "") -->
+<!--                  ))) -->
+<!-- ``` -->
 
-### 6. Use probability (percentage) formats when possible; frequency (fraction) formats can be effective, but they can also generate confusion.
+<!-- *** -->
 
-<font size=3.5px>
+<!-- **Notes:** In addition to the findings supporting Recommendation #3, there is also evidence that numeric expressions of probability are better suited for communicating very sensitive or unlikely risks. In scenarios where underestimating risks could have disastrous consequences, it may be better to provide a number first, then use the verbal expression as a translation (opposite to the way the IPCC reports “translate” their uncertainty communications, for example) in order to minimize the “extremity effect” (Dilla & Stone 1997; Jenkins, Harris, & Lark 2018, Jenkins Harris, & Lark 2019; Patt & Dessai 2005; Windschitl et al. 2017). Purely verbal expressions of risk should generally be avoided, especially when the risk is particularly severe or the information is particularly critical for people to hear and understand. If for some reason you must choose between providing purely verbal or purely numeric information, numeric information should be prioritized because it is interpreted more consistently. There is also some evidence that people tend to be more comfortable with and trusting of purely numeric information as opposed to purely verbal information, and that purely verbal statements often lead people to overestimate risks (Budescu, Weinberg, & Wallsten 1988; Gurmankin et al. 2004; Knapp, Raynor, Woolf et. al. 2009; P. Knapp, Raynor, & Berry 2004). -->
 
-**Recommendation #6:** Use probability (percentage) formats when possible; frequency (fraction) formats can be effective, but they can also generate confusion.
+<!-- ### 5. When using words and phrases to communicate probability information, include rank adjectives (like low, medium, and high) to indicate the magnitude of the probability; this is especially important if numeric translations are not available. -->
 
-**Example:** 
+<!-- <font size=3.5px> -->
 
-- **Replace**: There is a 1 in 10 chance that this storm will produce a tornado.
-- **With**: There is a 10% chance that this storm will produce a tornado.
+<!-- **Recommendation #5:** When using words and phrases to communicate probability information, include rank adjectives (like low, medium, and high) to indicate the magnitude of the probability; this is especially important if numeric translations are not available. -->
 
+<!-- **Example:**  -->
 
-**Example Studies**: <a href = "https://doi.org/10.1177/0272989X08315246">Cuite et al. (2008)</a> and <a href = "https://doi.org/10.1002/met.121">Joslyn & Nichols (2009)</a>
+<!-- - **Replace**: There is a chance of snow and ice this morning along I-75. -->
+<!-- - **With**: There is a low/medium/high chance of snow and ice this morning along I-75. -->
 
-<br>
-**All Relevant / Supporting Studies:** </font>
 
-```{r}
-cf6_studies <- data.findings %>%
-   filter(ID == "131" | ID == "132" | ID == "133" | ID == "134") 
+<!-- **Example Studies**: <a href = "https://doi.org/10.15191/nwajom.2020.0805">Lenhardt et al. (2020)</a> -->
 
-renderDataTable({
+<!-- <br> -->
+<!-- **All Relevant / Supporting Studies:** </font> -->
 
-data %>%
-  filter(str_detect(toString(cf6_studies$'Studies Cited'), data$`Full ID`)) %>%
-  mutate(Link = paste0('<a href = "https://doi.org/', DOI, '">Link to Article</a>')) %>%
-  select(Study, Link)
-  
-}, escape = FALSE, options = list(scrollY = '500px', paging = FALSE, ordering = FALSE, searching = FALSE, dom = "t", columns = list(
-                   list(title = ""),
-                   list(title = "")
-                 )))
-```
+<!-- ```{r} -->
+<!-- cf5_studies <- data.findings %>% -->
+<!--    filter() -->
 
-***
+<!-- renderDataTable({ -->
 
-**Notes:** Numeric probabilities are most commonly expressed as a percentage (e.g. “a 30% chance of rain”) or as a frequency (e.g. “a 3 in 10 chance of rain”). In general, the use of probability (percentage) formats has been observed to improve the accuracy of risk comprehension and encourage protective action over the use of verbal probability statements alone (Fuller et al. 2001; Fuller et al. 2002; Koehler 2001). Based on this, and on some of the findings of studies included in this review suggesting that frequency formats are less consistently understood, we recommend sticking with percentage formats (e.g. "30% chance") unless you have a particular reason to use a frequency format instead. Some evidence suggests, however, that when comparing between probability and frequency formats, there are few consistent and significant benefits to one over the other  (Hendrickx et al. 1989; Joslyn et al. 2009i; Neace et al. 2008; Knapp et al. 2016; Evans et al. 2000; Ruiz et al. 2013; Strathie et al. 2017). This research suggests that different circumstances call for different formats: advantageous use of frequency and percentage formats depends on the given task at hand and the context of the risk (Cuite et al. 2008; Knapp et al. 2009 ; Sinayev et al. 2015; Wallsten et al. 1986). 
+<!-- data %>% -->
+<!--   filter(str_detect(toString(cf5_studies$'Studies Cited'), data$`Full ID`)) %>% -->
+<!--   mutate(Link = paste0('<a href = "https://doi.org/', DOI, '">Link to Article</a>')) %>% -->
+<!--   select(Study, Link) -->
 
+<!-- }, escape = FALSE, options = list(scrollY = '500px', paging = FALSE, ordering = FALSE, searching = FALSE, dom = "t", columns = list( -->
+<!--                    list(title = ""), -->
+<!--                    list(title = "") -->
+<!--                  ))) -->
+<!-- ``` -->
 
-### 7. When using frequency (fraction) formats, use 1 in X formats in place of X and NX formats.
+<!-- *** -->
 
-<font size=3.5px>
+<!-- **Notes:**  -->
 
-**Recommendation #7:** When using frequency (fraction) formats, use 1 in X formats in place of X and NX formats.
+<!-- -  -->
 
-**Example:** 
+<!-- ### 6. Use probability (percentage) formats when possible; frequency (fraction) formats can be effective, but they can also generate confusion. -->
 
-- **Replace**: Recent models indicate that there is a 20 in 100 chance that this storm will cause significant storm surge in the New Orleans area.
-- **With**: Recent models indicate that there is a 1 in 5 chance that this storm will cause significant storm surge in the New Orleans area.
+<!-- <font size=3.5px> -->
 
+<!-- **Recommendation #6:** Use probability (percentage) formats when possible; frequency (fraction) formats can be effective, but they can also generate confusion. -->
 
-**Example Studies**: <a href = "https://doi.org/10.1177/0272989X11403490">Pighin et al. (2011)</a>
+<!-- **Example:**  -->
 
-<br>
-**All Relevant / Supporting Studies:** </font>
+<!-- - **Replace**: There is a 1 in 10 chance that this storm will produce a tornado. -->
+<!-- - **With**: There is a 10% chance that this storm will produce a tornado. -->
 
-```{r}
-cf7_studies <- data.findings %>%
-   filter(ID == "135") 
 
-renderDataTable({
+<!-- **Example Studies**: <a href = "https://doi.org/10.1177/0272989X08315246">Cuite et al. (2008)</a> and <a href = "https://doi.org/10.1002/met.121">Joslyn & Nichols (2009)</a> -->
 
-data %>%
-  filter(str_detect(toString(cf7_studies$'Studies Cited'), data$`Full ID`)) %>%
-  mutate(Link = paste0('<a href = "https://doi.org/', DOI, '">Link to Article</a>')) %>%
-  select(Study, Link)
-  
-}, escape = FALSE, options = list(scrollY = '500px', paging = FALSE, ordering = FALSE, searching = FALSE, dom = "t", columns = list(
-                   list(title = ""),
-                   list(title = "")
-                 )))
-```
+<!-- <br> -->
+<!-- **All Relevant / Supporting Studies:** </font> -->
 
-***
+<!-- ```{r} -->
+<!-- cf6_studies <- data.findings %>% -->
+<!--    filter(ID == "131" | ID == "132" | ID == "133" | ID == "134")  -->
 
-**Notes:** Frequency formats, which present probabilistic information as a “1 in X” and “X in NX “ chance, have been found to influence risk comprehension in a number of ways. For example, Pighin, et al. (2015) assessed the effects of format ("1 in X" or "N in NX") on the interpretations of risk information. They observed that individuals had elevated perceptions of risk when shown the “1 in X” format as compared to the “N in NX format”. Interestingly, this was still true despite no observed effect on comprehension (Pighin et al. 2015). Oudhoff and Timmermans (2015) examined format and graphic effects on decisions to engage in risk-laden activities. They noted that the “1-in-X” format yielded higher perceived likelihoods and appeared to be the easiest format to interpret; however, graphs primarily affect perceptions of likelihood among people with lower numeracy (Oudhoff & Timmermans 2015). Denes-Raj, Epstein, and Cole (1995) investigated the effects of using a “1 in X” format compared to “N in NX” format in order to better understand how ratio bias plays a role in decision making. Their research suggested that although ratio bias is common, it is not ubiquitous across different situations (Denes-Raj, Epstein & Cole 1995). 
+<!-- renderDataTable({ -->
 
-### 8. Include information about the reference class when using probability information.
+<!-- data %>% -->
+<!--   filter(str_detect(toString(cf6_studies$'Studies Cited'), data$`Full ID`)) %>% -->
+<!--   mutate(Link = paste0('<a href = "https://doi.org/', DOI, '">Link to Article</a>')) %>% -->
+<!--   select(Study, Link) -->
 
-<font size=3.5px>
+<!-- }, escape = FALSE, options = list(scrollY = '500px', paging = FALSE, ordering = FALSE, searching = FALSE, dom = "t", columns = list( -->
+<!--                    list(title = ""), -->
+<!--                    list(title = "") -->
+<!--                  ))) -->
+<!-- ``` -->
 
-**Recommendation #8:** Include information about the reference class when using probability information. 
+<!-- *** -->
 
-**Example:** 
+<!-- **Notes:** Numeric probabilities are most commonly expressed as a percentage (e.g. “a 30% chance of rain”) or as a frequency (e.g. “a 3 in 10 chance of rain”). In general, the use of probability (percentage) formats has been observed to improve the accuracy of risk comprehension and encourage protective action over the use of verbal probability statements alone (Fuller et al. 2001; Fuller et al. 2002; Koehler 2001). Based on this, and on some of the findings of studies included in this review suggesting that frequency formats are less consistently understood, we recommend sticking with percentage formats (e.g. "30% chance") unless you have a particular reason to use a frequency format instead. Some evidence suggests, however, that when comparing between probability and frequency formats, there are few consistent and significant benefits to one over the other  (Hendrickx et al. 1989; Joslyn et al. 2009i; Neace et al. 2008; Knapp et al. 2016; Evans et al. 2000; Ruiz et al. 2013; Strathie et al. 2017). This research suggests that different circumstances call for different formats: advantageous use of frequency and percentage formats depends on the given task at hand and the context of the risk (Cuite et al. 2008; Knapp et al. 2009 ; Sinayev et al. 2015; Wallsten et al. 1986).  -->
 
-- **Replace**: There is a low chance of tornadoes in the Oklahoma City metro area tomorrow afternoon and evening.
-- **With**: There is a low (2%) chance of tornadoes in the Oklahoma City metro area tomorrow afternoon and evening; on 1 in 50 days like today, there will be a tornado within 25 miles of your location.
 
+<!-- ### 7. When using frequency (fraction) formats, use 1 in X formats in place of X and NX formats. -->
 
-**Example Studies**: <a href = "https://doi.org/10.1111/j.1539-6924.2005.00608.x">Gigerenzer et. al. (2005)</a> and <a href = "https://doi.org/10.1080/20445911.2018.1553884">Juanchich & Sirota (2018)</a>
+<!-- <font size=3.5px> -->
 
-<br>
-**All Relevant / Supporting Studies:** </font>
+<!-- **Recommendation #7:** When using frequency (fraction) formats, use 1 in X formats in place of X and NX formats. -->
 
-```{r}
-cf8_studies <- data.findings %>%
-   filter(ID == "133" | ID == "153") 
+<!-- **Example:**  -->
 
-renderDataTable({
+<!-- - **Replace**: Recent models indicate that there is a 20 in 100 chance that this storm will cause significant storm surge in the New Orleans area. -->
+<!-- - **With**: Recent models indicate that there is a 1 in 5 chance that this storm will cause significant storm surge in the New Orleans area. -->
 
-data %>%
-  filter(str_detect(toString(cf8_studies$'Studies Cited'), data$`Full ID`)) %>%
-  mutate(Link = paste0('<a href = "https://doi.org/', DOI, '">Link to Article</a>')) %>%
-  select(Study, Link)
-  
-}, escape = FALSE, options = list(scrollY = '500px', paging = FALSE, ordering = FALSE, searching = FALSE, dom = "t", columns = list(
-                   list(title = ""),
-                   list(title = "")
-                 )))
-```
 
-***
+<!-- **Example Studies**: <a href = "https://doi.org/10.1177/0272989X11403490">Pighin et al. (2011)</a> -->
 
-**Notes:** Many of the studies included in this review suggest that, often, people have more trouble discerning the events that a probabilistic forecast refers to than they do understanding the probability itself. For instance, Evans et al. (2000) observe that formats, whether frequencies or percentages, have little effect on understanding, unless they are also presented in a way that “facilitated construction of a set inclusion mental model” (p. 197). Gigerenzer et al. (2005) argue that one way to provide such a definition is through the inclusion of reference class, or the class of events to which a probability refers. Rather than simply stating, “There is a 30% chance of rain tomorrow,” a forecast that includes reference class would be written, “There is a 30% chance of rain on days like tomorrow. This means that on 3 out of 10 days like tomorrow, it will rain” (Gigerenzer et al. 2005). Juanchich and Sirota (2018) find that specifying the reference class can increase correct interpretation by reducing misunderstanding and ambiguity in the way forecasts are presented. Neace et al. (2008) present evidence that supports using frequency formats to reduce errors, they also demonstrated that when controlling for reference class, this effect largely disappears, leaving little difference between frequency-based and probability-based formats. In short, don't assume audiences know what the word "rain" refers to in a statement like "there is a 30% chance of rain" (Will it rain 30% of the time? In 30% of my area? Is there a 30% chance of any rain falling at all, or do you mean a substantial rainfall?).
+<!-- <br> -->
+<!-- **All Relevant / Supporting Studies:** </font> -->
 
+<!-- ```{r} -->
+<!-- cf7_studies <- data.findings %>% -->
+<!--    filter(ID == "135")  -->
 
-### 9. Be aware of “directionality” when using probability information; positive frames can promote comprehension by encouraging people to focus on the events that are most likely to happen, whereas negative frames can promote risk aversion by encouraging people to focus on the possibility of negative events, even if they are unlikely.
+<!-- renderDataTable({ -->
 
-<font size=3.5px>
+<!-- data %>% -->
+<!--   filter(str_detect(toString(cf7_studies$'Studies Cited'), data$`Full ID`)) %>% -->
+<!--   mutate(Link = paste0('<a href = "https://doi.org/', DOI, '">Link to Article</a>')) %>% -->
+<!--   select(Study, Link) -->
 
-**Recommendation #9:** Be aware of “directionality” when using probability information; positive frames can promote comprehension by encouraging people to focus on the events that are most likely to happen, whereas negative frames can promote risk aversion by encouraging people to focus on the possibility of negative events, even if they are unlikely. 
+<!-- }, escape = FALSE, options = list(scrollY = '500px', paging = FALSE, ordering = FALSE, searching = FALSE, dom = "t", columns = list( -->
+<!--                    list(title = ""), -->
+<!--                    list(title = "") -->
+<!--                  ))) -->
+<!-- ``` -->
 
-**Example:** 
+<!-- *** -->
 
-- **Replace**: There is a high (90%) chance of sunny skies today.
-- **With**: There is a low (10%) chance of freezing drizzle today.
+<!-- **Notes:** Frequency formats, which present probabilistic information as a “1 in X” and “X in NX “ chance, have been found to influence risk comprehension in a number of ways. For example, Pighin, et al. (2015) assessed the effects of format ("1 in X" or "N in NX") on the interpretations of risk information. They observed that individuals had elevated perceptions of risk when shown the “1 in X” format as compared to the “N in NX format”. Interestingly, this was still true despite no observed effect on comprehension (Pighin et al. 2015). Oudhoff and Timmermans (2015) examined format and graphic effects on decisions to engage in risk-laden activities. They noted that the “1-in-X” format yielded higher perceived likelihoods and appeared to be the easiest format to interpret; however, graphs primarily affect perceptions of likelihood among people with lower numeracy (Oudhoff & Timmermans 2015). Denes-Raj, Epstein, and Cole (1995) investigated the effects of using a “1 in X” format compared to “N in NX” format in order to better understand how ratio bias plays a role in decision making. Their research suggested that although ratio bias is common, it is not ubiquitous across different situations (Denes-Raj, Epstein & Cole 1995).  -->
 
+<!-- ### 8. Include information about the reference class when using probability information. -->
 
-**Example Studies**: <a href = "https://doi.org/10.1080/17470218.2016.1225779">Honda & Yamagishi (2017)</a> and <a href = "https://doi.org/10.1006/obhd.1999.2857">Teigen & Brun (2003)</a>
+<!-- <font size=3.5px> -->
 
-<br>
-**All Relevant / Supporting Studies:** </font>
-```{r}
-cf9_studies <- data.findings %>%
-  filter(ID == "107") 
+<!-- **Recommendation #8:** Include information about the reference class when using probability information.  -->
 
-renderDataTable({
+<!-- **Example:**  -->
 
-data %>%
-  filter(str_detect(toString(cf9_studies$'Studies Cited'), data$`Full ID`)) %>%
-  mutate(Link = paste0('<a href = "https://doi.org/', DOI, '">Link to Article</a>')) %>%
-  select(Study, Link)
-  
-}, escape = FALSE, options = list(scrollY = '500px', paging = FALSE, ordering = FALSE, searching = FALSE, dom = "t", columns = list(
-                   list(title = ""),
-                   list(title = "")
-                 )))
-```
+<!-- - **Replace**: There is a low chance of tornadoes in the Oklahoma City metro area tomorrow afternoon and evening. -->
+<!-- - **With**: There is a low (2%) chance of tornadoes in the Oklahoma City metro area tomorrow afternoon and evening; on 1 in 50 days like today, there will be a tornado within 25 miles of your location. -->
 
-***
 
-**Notes:** "Directionality" refers to whether a statement emphasizes the chance that something will not happen (e.g. "it is likely that the hurricane will miss our town") or the chance that something will happen (e.g. "it is unlikely that the hurricane will hit our town"). Findings from these studies suggest that forecasters should be mindful of these concepts when crafting verbal probability statements, as they can have unintended consequences on interpretation. It should be noted that there is no universal "best" choice to use when it comes to directionality and contextual factors can affect understanding, highlighting the ability for forecasters to accidentally imply that their forecasts are higher or lower than intended, thereby indirectly influencing how people interpret the communication. Generally, positive statements seem to draw attention to the possibility of an event happening and cause people to interpret such statements as more likely, while negative statements tend to have the opposite effect, promoting risk aversion by encouraging people to focus on the possibility of negative events, even if they are unlikely (Honda and Yamagishi 2006; 2009; 2017; McKenzie and Nelson 2003; Teigen and Brun 1995; 1999; 2000; 2003, Wallsten et al. 1986; Budescu et al. 2003).
+<!-- **Example Studies**: <a href = "https://doi.org/10.1111/j.1539-6924.2005.00608.x">Gigerenzer et. al. (2005)</a> and <a href = "https://doi.org/10.1080/20445911.2018.1553884">Juanchich & Sirota (2018)</a> -->
 
-### 10. When possible, include probability information in forecast visualizations.
+<!-- <br> -->
+<!-- **All Relevant / Supporting Studies:** </font> -->
 
-<font size=3.5px>
+<!-- ```{r} -->
+<!-- cf8_studies <- data.findings %>% -->
+<!--    filter(ID == "133" | ID == "153")  -->
 
-**Recommendation #10:** When possible, include probability information in forecast visualizations. 
+<!-- renderDataTable({ -->
 
-**Example:** 
+<!-- data %>% -->
+<!--   filter(str_detect(toString(cf8_studies$'Studies Cited'), data$`Full ID`)) %>% -->
+<!--   mutate(Link = paste0('<a href = "https://doi.org/', DOI, '">Link to Article</a>')) %>% -->
+<!--   select(Study, Link) -->
 
-- **Replace**: Maps showing deterministic warning boxes/polygons.
-- **With**: Maps showing probabilistic information; for example: probability grids (FACETs); Potential Storm Surge Flooding map (NHC).
+<!-- }, escape = FALSE, options = list(scrollY = '500px', paging = FALSE, ordering = FALSE, searching = FALSE, dom = "t", columns = list( -->
+<!--                    list(title = ""), -->
+<!--                    list(title = "") -->
+<!--                  ))) -->
+<!-- ``` -->
 
+<!-- *** -->
 
-**Example Studies**: <a href = "https://doi.org/10.1175/WCAS-D-18-0094.1">Gerst et al. (2020)</a>
+<!-- **Notes:** Many of the studies included in this review suggest that, often, people have more trouble discerning the events that a probabilistic forecast refers to than they do understanding the probability itself. For instance, Evans et al. (2000) observe that formats, whether frequencies or percentages, have little effect on understanding, unless they are also presented in a way that “facilitated construction of a set inclusion mental model” (p. 197). Gigerenzer et al. (2005) argue that one way to provide such a definition is through the inclusion of reference class, or the class of events to which a probability refers. Rather than simply stating, “There is a 30% chance of rain tomorrow,” a forecast that includes reference class would be written, “There is a 30% chance of rain on days like tomorrow. This means that on 3 out of 10 days like tomorrow, it will rain” (Gigerenzer et al. 2005). Juanchich and Sirota (2018) find that specifying the reference class can increase correct interpretation by reducing misunderstanding and ambiguity in the way forecasts are presented. Neace et al. (2008) present evidence that supports using frequency formats to reduce errors, they also demonstrated that when controlling for reference class, this effect largely disappears, leaving little difference between frequency-based and probability-based formats. In short, don't assume audiences know what the word "rain" refers to in a statement like "there is a 30% chance of rain" (Will it rain 30% of the time? In 30% of my area? Is there a 30% chance of any rain falling at all, or do you mean a substantial rainfall?). -->
 
-<br>
-**All Relevant / Supporting Studies:** </font>
 
-```{r}
-cf10_studies <- data.findings %>%
-   filter(ID == "191" | ID == "209") 
+<!-- ### 9. Be aware of “directionality” when using probability information; positive frames can promote comprehension by encouraging people to focus on the events that are most likely to happen, whereas negative frames can promote risk aversion by encouraging people to focus on the possibility of negative events, even if they are unlikely. -->
 
-renderDataTable({
+<!-- <font size=3.5px> -->
 
-data %>%
-  filter(str_detect(toString(cf10_studies$'Studies Cited'), data$`Full ID`)) %>%
-  mutate(Link = paste0('<a href = "https://doi.org/', DOI, '">Link to Article</a>')) %>%
-  select(Study, Link)
-  
-}, escape = FALSE, options = list(scrollY = '500px', paging = FALSE, ordering = FALSE, searching = FALSE, dom = "t", columns = list(
-                   list(title = ""),
-                   list(title = "")
-                 )))
-```
+<!-- **Recommendation #9:** Be aware of “directionality” when using probability information; positive frames can promote comprehension by encouraging people to focus on the events that are most likely to happen, whereas negative frames can promote risk aversion by encouraging people to focus on the possibility of negative events, even if they are unlikely.  -->
 
-***
+<!-- **Example:**  -->
 
-**Notes:** Visualizations often provide an effective way to communicate probability information to groups who may have difficulty with probabilities expressed as numbers or words, even if for no other reason than because people want them and, subjectively, find them useful (Johnson and Slovic 1995; 1998). Use of visuals has also been shown to be more effective in communicating probability information with younger audiences (Ulph et al. 2009), and less numerate audiences (Okan et al. 2015), making them a crucial tool for risk communicators in any domain. In the domain of weather, probabilistic visualizations often come in the form of maps; the studies in this review suggest that people understand basic probability information about forecasts when presented with a map (Wu et al. 2014). Gerst et al. (2020) find that using simplified maps (e.g., legends, contour lines, white space) can improve overall understanding of probability information. Color and size-based visualizations allow for quicker but less thought-out decisions, while texture and icon-based depictions require more time and deliberation (Cheong et al. 2019; Seipel and Lim 2017; Leitner and Buttenfield 2000; Miran et al. 2017; Tak and Toet 2014.; Miran et al. 2016; Retchless and Brewer 2016; Sherman-Morris et al. 2015). In addition to colors, track lines have been found to increase levels of concern among members of the public with little effect on the interpretation of probability information (Meyer et al. 2013; Newman and Scholl 2012; Padilla et al. 2017; Ruginski et al. 2016; Van Pelt et al. 2015; Wu et al 2014). 
+<!-- - **Replace**: There is a high (90%) chance of sunny skies today. -->
+<!-- - **With**: There is a low (10%) chance of freezing drizzle today. -->
 
 
+<!-- **Example Studies**: <a href = "https://doi.org/10.1080/17470218.2016.1225779">Honda & Yamagishi (2017)</a> and <a href = "https://doi.org/10.1006/obhd.1999.2857">Teigen & Brun (2003)</a> -->
 
-### 11. Use visualizations to increase comprehension of probability information; icon arrays and ensemble plots can be especially effective when teaching people how to interpret probability information. Note: this might not be appropriate immediately before or during high impact events.
+<!-- <br> -->
+<!-- **All Relevant / Supporting Studies:** </font> -->
+<!-- ```{r} -->
+<!-- cf9_studies <- data.findings %>% -->
+<!--   filter(ID == "107")  -->
 
-<font size=3.5px>
+<!-- renderDataTable({ -->
 
-**Recommendation #11:** Use visualizations to increase comprehension of probability information; icon arrays and ensemble plots can be especially effective when teaching people how to interpret probability information. Note: this might not be appropriate immediately before or during high impact events.
+<!-- data %>% -->
+<!--   filter(str_detect(toString(cf9_studies$'Studies Cited'), data$`Full ID`)) %>% -->
+<!--   mutate(Link = paste0('<a href = "https://doi.org/', DOI, '">Link to Article</a>')) %>% -->
+<!--   select(Study, Link) -->
 
-**Example:** 
+<!-- }, escape = FALSE, options = list(scrollY = '500px', paging = FALSE, ordering = FALSE, searching = FALSE, dom = "t", columns = list( -->
+<!--                    list(title = ""), -->
+<!--                    list(title = "") -->
+<!--                  ))) -->
+<!-- ``` -->
 
-- **Replace**: Models indicate that there is an 80% to 90% chance that hurricane force winds will affect Miami, FL in the next 5 days.
-- **With**: 
+<!-- *** -->
 
+<!-- **Notes:** "Directionality" refers to whether a statement emphasizes the chance that something will not happen (e.g. "it is likely that the hurricane will miss our town") or the chance that something will happen (e.g. "it is unlikely that the hurricane will hit our town"). Findings from these studies suggest that forecasters should be mindful of these concepts when crafting verbal probability statements, as they can have unintended consequences on interpretation. It should be noted that there is no universal "best" choice to use when it comes to directionality and contextual factors can affect understanding, highlighting the ability for forecasters to accidentally imply that their forecasts are higher or lower than intended, thereby indirectly influencing how people interpret the communication. Generally, positive statements seem to draw attention to the possibility of an event happening and cause people to interpret such statements as more likely, while negative statements tend to have the opposite effect, promoting risk aversion by encouraging people to focus on the possibility of negative events, even if they are unlikely (Honda and Yamagishi 2006; 2009; 2017; McKenzie and Nelson 2003; Teigen and Brun 1995; 1999; 2000; 2003, Wallsten et al. 1986; Budescu et al. 2003). -->
 
-**Example Studies**: <a href = "https://doi.org/10.1177/1473871618807121">Toet et al. (2019)</a> and <a href = "https://doi.org/10.1002/bdm.1797">Garcia-Retamero & Cokely (2014)</a>
+<!-- ### 10. When possible, include probability information in forecast visualizations. -->
 
-<br>
-**All Relevant / Supporting Studies:** </font>
+<!-- <font size=3.5px> -->
 
-```{r}
-cf11_studies <- data.findings %>%
-   filter(ID == "207" | ID == "208" | ID == "212") 
+<!-- **Recommendation #10:** When possible, include probability information in forecast visualizations.  -->
 
-renderDataTable({
+<!-- **Example:**  -->
 
-data %>%
-  filter(str_detect(toString(cf11_studies$'Studies Cited'), data$`Full ID`)) %>%
-  mutate(Link = paste0('<a href = "https://doi.org/', DOI, '">Link to Article</a>')) %>%
-  select(Study, Link)
-  
-}, escape = FALSE, options = list(scrollY = '500px', paging = FALSE, ordering = FALSE, searching = FALSE, dom = "t", columns = list(
-                   list(title = ""),
-                   list(title = "")
-                 )))
-```
+<!-- - **Replace**: Maps showing deterministic warning boxes/polygons. -->
+<!-- - **With**: Maps showing probabilistic information; for example: probability grids (FACETs); Potential Storm Surge Flooding map (NHC). -->
 
-***
 
-**Notes:** In addition to maps, other types of visualizations have been used to improve understanding of probability information in weather forecasts, including ensemble plots (Toet et al. 2019) and interactive formats (Hogarth and Soyer 2015; Natter and Berry 2005). For example, the visualization of a confidence interval can influence how people interpret a forecast. People understand smaller confidence intervals to mean that a forecast is more technologically advanced and more certain (Teigen et al. 2018). Additionally, predictive interval graphics can encourage protective action (S. Joslyn, Nemec, and Savelli 2013). Use of visualizations, however, can often depend on the purpose of communication. In some instances, the use of deterministic visualizations can increase protective action, while the use of probabilistic visualizations can better communicate changes in risk (Ash et al. 2014; Baker 1995; Marimo et al. 2015). 
+<!-- **Example Studies**: <a href = "https://doi.org/10.1175/WCAS-D-18-0094.1">Gerst et al. (2020)</a> -->
 
+<!-- <br> -->
+<!-- **All Relevant / Supporting Studies:** </font> -->
 
-### 12. Pay attention to the audience when using probability information; most people are able to grasp basic probability information, but a lot depends on numeracy and experience.
+<!-- ```{r} -->
+<!-- cf10_studies <- data.findings %>% -->
+<!--    filter(ID == "191" | ID == "209")  -->
 
-<font size=3.5px>
+<!-- renderDataTable({ -->
 
-**Recommendation #12:** Pay attention to the audience when using probability information; most people are able to grasp basic probability information, but a lot depends on numeracy and experience.
+<!-- data %>% -->
+<!--   filter(str_detect(toString(cf10_studies$'Studies Cited'), data$`Full ID`)) %>% -->
+<!--   mutate(Link = paste0('<a href = "https://doi.org/', DOI, '">Link to Article</a>')) %>% -->
+<!--   select(Study, Link) -->
 
-**Example Studies**: <a href = "https://doi.org/10.1111/disa.12293">Wernstedt et al. (2018)</a> and <a href = "https://doi.org/10.1111/j.1539-6924.2009.01279.x">Dieckmann et al. (2009)</a>
+<!-- }, escape = FALSE, options = list(scrollY = '500px', paging = FALSE, ordering = FALSE, searching = FALSE, dom = "t", columns = list( -->
+<!--                    list(title = ""), -->
+<!--                    list(title = "") -->
+<!--                  ))) -->
+<!-- ``` -->
 
-<br>
-**All Relevant / Supporting Studies:** </font>
+<!-- *** -->
+
+<!-- **Notes:** Visualizations often provide an effective way to communicate probability information to groups who may have difficulty with probabilities expressed as numbers or words, even if for no other reason than because people want them and, subjectively, find them useful (Johnson and Slovic 1995; 1998). Use of visuals has also been shown to be more effective in communicating probability information with younger audiences (Ulph et al. 2009), and less numerate audiences (Okan et al. 2015), making them a crucial tool for risk communicators in any domain. In the domain of weather, probabilistic visualizations often come in the form of maps; the studies in this review suggest that people understand basic probability information about forecasts when presented with a map (Wu et al. 2014). Gerst et al. (2020) find that using simplified maps (e.g., legends, contour lines, white space) can improve overall understanding of probability information. Color and size-based visualizations allow for quicker but less thought-out decisions, while texture and icon-based depictions require more time and deliberation (Cheong et al. 2019; Seipel and Lim 2017; Leitner and Buttenfield 2000; Miran et al. 2017; Tak and Toet 2014.; Miran et al. 2016; Retchless and Brewer 2016; Sherman-Morris et al. 2015). In addition to colors, track lines have been found to increase levels of concern among members of the public with little effect on the interpretation of probability information (Meyer et al. 2013; Newman and Scholl 2012; Padilla et al. 2017; Ruginski et al. 2016; Van Pelt et al. 2015; Wu et al 2014).  -->
+
+
+
+<!-- ### 11. Use visualizations to increase comprehension of probability information; icon arrays and ensemble plots can be especially effective when teaching people how to interpret probability information. Note: this might not be appropriate immediately before or during high impact events. -->
+
+<!-- <font size=3.5px> -->
+
+<!-- **Recommendation #11:** Use visualizations to increase comprehension of probability information; icon arrays and ensemble plots can be especially effective when teaching people how to interpret probability information. Note: this might not be appropriate immediately before or during high impact events. -->
+
+<!-- **Example:**  -->
+
+<!-- - **Replace**: Models indicate that there is an 80% to 90% chance that hurricane force winds will affect Miami, FL in the next 5 days. -->
+<!-- - **With**:  -->
+
+
+<!-- **Example Studies**: <a href = "https://doi.org/10.1177/1473871618807121">Toet et al. (2019)</a> and <a href = "https://doi.org/10.1002/bdm.1797">Garcia-Retamero & Cokely (2014)</a> -->
+
+<!-- <br> -->
+<!-- **All Relevant / Supporting Studies:** </font> -->
+
+<!-- ```{r} -->
+<!-- cf11_studies <- data.findings %>% -->
+<!--    filter(ID == "207" | ID == "208" | ID == "212")  -->
+
+<!-- renderDataTable({ -->
+
+<!-- data %>% -->
+<!--   filter(str_detect(toString(cf11_studies$'Studies Cited'), data$`Full ID`)) %>% -->
+<!--   mutate(Link = paste0('<a href = "https://doi.org/', DOI, '">Link to Article</a>')) %>% -->
+<!--   select(Study, Link) -->
+
+<!-- }, escape = FALSE, options = list(scrollY = '500px', paging = FALSE, ordering = FALSE, searching = FALSE, dom = "t", columns = list( -->
+<!--                    list(title = ""), -->
+<!--                    list(title = "") -->
+<!--                  ))) -->
+<!-- ``` -->
+
+<!-- *** -->
+
+<!-- **Notes:** In addition to maps, other types of visualizations have been used to improve understanding of probability information in weather forecasts, including ensemble plots (Toet et al. 2019) and interactive formats (Hogarth and Soyer 2015; Natter and Berry 2005). For example, the visualization of a confidence interval can influence how people interpret a forecast. People understand smaller confidence intervals to mean that a forecast is more technologically advanced and more certain (Teigen et al. 2018). Additionally, predictive interval graphics can encourage protective action (S. Joslyn, Nemec, and Savelli 2013). Use of visualizations, however, can often depend on the purpose of communication. In some instances, the use of deterministic visualizations can increase protective action, while the use of probabilistic visualizations can better communicate changes in risk (Ash et al. 2014; Baker 1995; Marimo et al. 2015).  -->
+
+
+<!-- ### 12. Pay attention to the audience when using probability information; most people are able to grasp basic probability information, but a lot depends on numeracy and experience. -->
+
+<!-- <font size=3.5px> -->
+
+<!-- **Recommendation #12:** Pay attention to the audience when using probability information; most people are able to grasp basic probability information, but a lot depends on numeracy and experience. -->
+
+<!-- **Example Studies**: <a href = "https://doi.org/10.1111/disa.12293">Wernstedt et al. (2018)</a> and <a href = "https://doi.org/10.1111/j.1539-6924.2009.01279.x">Dieckmann et al. (2009)</a> -->
+
+<!-- <br> -->
+<!-- **All Relevant / Supporting Studies:** </font> -->
 
 ```{r}
 # cf12_studies <- data.findings %>%
@@ -1022,6 +1083,6 @@ data %>%
 #                  )))
 ```
 
-***
+<!-- *** -->
 
-**Notes:** Many of the studies in the review include findings that, while important, are overly specific or difficult to generalize and use for forecasters. The general consensus of these findings, though, is clear: efforts to communicate probability information must also consider the heterogeneous nature of audiences and the different contexts and biases they entail. For instance, when it comes to both members of the public and experts, individuals sometimes have difficulty accurately interpreting forecasts that include probability information due to a number of different factors, such as context (Kim et al. 2014; Klockow-McClain et al. 2020; Morss et al. 2010; Hohle, and Teigen 2015; Løhre 2018; Windschitl and Weber 1999), motivated reasoning (Dieckmann et al. 2017), and numeracy (Kong et al. 1986; Bramwell et al. 2006; Harris et al. 2013; Rinne and Mazzocco 2013; Juanchich and Sirota 2016). Forecasters play a critical role in setting the context for communicating probability information through their use of language (Connelly and Knurth 1998; Franic and Pathak 2000; Kox et al. 2015; Pappenberger et al. 2013). The way in which forecasters frame messages can influence how audiences interpret risks (Harris et al. 2009; Keller et al. 2006; Wilson et al. 2019). 
+<!-- **Notes:** Many of the studies in the review include findings that, while important, are overly specific or difficult to generalize and use for forecasters. The general consensus of these findings, though, is clear: efforts to communicate probability information must also consider the heterogeneous nature of audiences and the different contexts and biases they entail. For instance, when it comes to both members of the public and experts, individuals sometimes have difficulty accurately interpreting forecasts that include probability information due to a number of different factors, such as context (Kim et al. 2014; Klockow-McClain et al. 2020; Morss et al. 2010; Hohle, and Teigen 2015; Løhre 2018; Windschitl and Weber 1999), motivated reasoning (Dieckmann et al. 2017), and numeracy (Kong et al. 1986; Bramwell et al. 2006; Harris et al. 2013; Rinne and Mazzocco 2013; Juanchich and Sirota 2016). Forecasters play a critical role in setting the context for communicating probability information through their use of language (Connelly and Knurth 1998; Franic and Pathak 2000; Kox et al. 2015; Pappenberger et al. 2013). The way in which forecasters frame messages can influence how audiences interpret risks (Harris et al. 2009; Keller et al. 2006; Wilson et al. 2019).  -->
